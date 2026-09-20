@@ -1,0 +1,23 @@
+create table if not exists interpelli (
+  record_key text primary key,
+  scuola text,
+  codice_meccanografico text,
+  regione text,
+  provincia text,
+  comune text,
+  grado_scuola text,
+  classe_concorso text,
+  tipologia_posto text,
+  ore_settimanali text,
+  data_pubblicazione date,
+  data_scadenza date,
+  url_diretto text,
+  last_seen_at timestamptz default now(),
+  created_at timestamptz default now()
+);
+
+alter table interpelli enable row level security;
+
+create policy "Lettura pubblica" on interpelli
+  for select
+  using (true);
