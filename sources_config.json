@@ -1,0 +1,24 @@
+{
+  "sources": [
+    { "sigla": "SI", "regione": "Toscana", "url": "https://www.uspsi.it/?cat=271", "parser": "generic_wp" },
+    { "sigla": "CH", "regione": "Abruzzo", "url": "https://www.istruzionechietipescara.it/?s=INTERPELLO&submit=", "parser": "generic_wp" },
+    { "sigla": "PE", "regione": "Abruzzo", "url": "https://www.istruzionechietipescara.it/?s=INTERPELLO&submit=", "parser": "generic_wp" },
+    { "sigla": "AQ", "regione": "Abruzzo", "url": "https://lnx.csalaquila.it/wp/category/interpelli-nazionali/", "parser": "generic_wp" },
+    { "sigla": "BO", "regione": "Emilia-Romagna", "url": "https://bo.istruzioneer.gov.it/", "parser": "generic_wp" },
+    { "sigla": "MO", "regione": "Emilia-Romagna", "url": "https://mo.istruzioneer.gov.it/category/interpelli-personale-docente-2026-27/", "parser": "generic_wp" },
+    { "sigla": "RA", "regione": "Emilia-Romagna", "url": "https://ra.istruzioneer.gov.it/conferimento-supplenze-per-esaurimento-graduatorie-di-istituto/", "parser": "generic_wp" },
+    { "sigla": "AN", "regione": "Marche", "url": "https://www.istruzione-ancona.it/", "parser": "generic_wp" },
+    { "sigla": "AP", "regione": "Marche", "url": "https://www.uspascolipiceno.it/wordpress/", "parser": "generic_wp" },
+    { "sigla": "PU", "regione": "Marche", "url": "https://www.usppesarourbino.it/category/interpelli/", "parser": "generic_wp" },
+    { "sigla": "VA", "regione": "Lombardia", "url": "https://www.mim.gov.it/web/varese/interpelli-ricerca-supplenti", "parser": "mim_web" },
+    { "sigla": "BG", "regione": "Lombardia", "url": "https://www.mim.gov.it/web/bergamo/interpelli-ricerca-supplenti", "parser": "mim_web" },
+    { "sigla": "PG", "regione": "Umbria", "url": "https://istruzione.umbria.it/interpelli/interpelli-aperti/", "parser": "umbria_table" },
+    { "sigla": "TR", "regione": "Umbria", "url": "https://istruzione.umbria.it/interpelli/interpelli-aperti/", "parser": "umbria_table" },
+    { "sigla": "TO", "regione": "Piemonte", "url": "https://servizi.istruzionepiemonte.it/interpello2026/ric_interpello_ambito_to.php", "parser": "piemonte_php" },
+    { "sigla": "AL", "regione": "Piemonte", "url": "https://servizi.istruzionepiemonte.it/interpello2026/ric_interpello_ambito_al.php", "parser": "piemonte_php" },
+    { "sigla": "AT", "regione": "Piemonte", "url": "https://servizi.istruzionepiemonte.it/interpello2026/ric_interpello_ambito_at.php", "parser": "piemonte_php" },
+    { "sigla": "BA", "regione": "Puglia", "url": "https://www.uspbari.it/usp/", "parser": "generic_wp" },
+    { "sigla": "FG", "regione": "Puglia", "url": "https://www.ustfoggia.it/", "parser": "generic_wp" },
+    { "sigla": "TA", "regione": "Puglia", "url": "https://www.usptaranto.it/search/interpellO/", "parser": "generic_wp" }
+  ]
+}
