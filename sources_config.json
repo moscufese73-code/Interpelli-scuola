@@ -1,4 +1,4 @@
-{
+ {
   "sources": [
     { "sigla": "CH", "regione": "Abruzzo", "url": "https://www.istruzionechietipescara.it/?s=INTERPELLO&submit=", "parser": "generic_wp" },
     { "sigla": "AQ", "regione": "Abruzzo", "url": "https://lnx.csalaquila.it/wp/category/interpelli-nazionali/", "parser": "generic_wp" },
@@ -10,7 +10,7 @@
     { "sigla": "KR", "regione": "Calabria", "url": "https://www.istruzione.calabria.it/crotone/category/notizie/interpelli-per-supplenza/", "parser": "generic_wp" },
     { "sigla": "RC", "regione": "Calabria", "url": "https://www.istruzioneatprc.it/category/recl/int/", "parser": "generic_wp" },
     { "sigla": "VV", "regione": "Calabria", "url": "https://www.istruzione.calabria.it/vibovalentia/", "parser": "generic_wp" },
-    { "sigla": "AV", "regione": "Campania", "url": "https://www.uat-avellino.it/", "parser": "generic_wp" },
+    { "sigla": "AV", "regione": "Campania", "url": "https://www.atavellino.it/", "parser": "generic_wp" },
     { "sigla": "BN", "regione": "Campania", "url": "https://www.uspbenevento.it/uat/category/interpelli-e-varie/", "parser": "generic_wp" },
     { "sigla": "CE", "regione": "Campania", "url": "https://www.uat-caserta.it/comunicazioni/news-dalle-scuole/", "parser": "generic_wp" },
     { "sigla": "NA", "regione": "Campania", "url": "https://www.uat-napoli.it/tag/interpelli-personale-docente/", "parser": "generic_wp" },
@@ -33,7 +33,8 @@
     { "sigla": "RM", "regione": "Lazio", "url": "https://www.atpromaistruzione.it/atp/category/reclutamento/interpelli-personale-docente/", "parser": "generic_wp" },
     { "sigla": "VT", "regione": "Lazio", "url": "http://www.provveditoratostudiviterbo.it/DOCENTI/interpelli/INTERPELLIDOC.htm", "parser": "generic_wp" },
     { "sigla": "GE", "regione": "Liguria", "url": "https://www.istruzionegenova.gov.it/pagine/interpelli-e-comunicati", "parser": "generic_wp" },
-    { "sigla": "IM", "regione": "Liguria", "url": "https://www.istruzioneimperia.gov.it/pagine/interpelli-e-comunicati", "parser": "generic_wp" },{ "sigla": "SP", "regione": "Liguria", "url": "https://servizi.istruzioneliguria.gov.it/provincia.php?provincia=SP", "parser": "generic_wp" },
+    { "sigla": "IM", "regione": "Liguria", "url": "https://www.istruzioneimperia.gov.it/pagine/interpelli-e-comunicati", "parser": "generic_wp" },
+    { "sigla": "SP", "regione": "Liguria", "url": "https://servizi.istruzioneliguria.gov.it/provincia.php?provincia=SP", "parser": "generic_wp" },
     { "sigla": "SV", "regione": "Liguria", "url": "https://servizi.istruzioneliguria.gov.it/provincia.php?provincia=SV", "parser": "generic_wp" },
     { "sigla": "BG", "regione": "Lombardia", "url": "https://www.mim.gov.it/web/bergamo/interpelli-ricerca-supplenti", "parser": "mim_web" },
     { "sigla": "BS", "regione": "Lombardia", "url": "https://www.mim.gov.it/web/brescia/interpelli-ricerca-supplenti", "parser": "mim_web" },
@@ -65,8 +66,8 @@
     { "sigla": "BT", "regione": "Puglia", "url": "https://www.uspbari.it/usp/", "parser": "generic_wp" },
     { "sigla": "BR", "regione": "Puglia", "url": "https://www.istruzionebrindisi.it/category/interpelli/", "parser": "generic_wp" },
     { "sigla": "FG", "regione": "Puglia", "url": "https://www.ustfoggia.it/", "parser": "generic_wp" },
-    { "sigla": "LE", "regione": "Puglia", "url": "https://www.ustfoggia.it/", "parser": "generic_wp" },
-    { "sigla": "TA", "regione": "Puglia", "url": "https://www.usptaranto.it/search/interpellO/", "parser": "generic_wp" },{ "sigla": "CA", "regione": "Sardegna", "url": "https://www.mim.gov.it/web/cagliari/notizie", "parser": "mim_web" },
+    { "sigla": "TA", "regione": "Puglia", "url": "https://www.usptaranto.it/search/interpellO/", "parser": "generic_wp" },
+    { "sigla": "CA", "regione": "Sardegna", "url": "https://www.mim.gov.it/web/cagliari/notizie", "parser": "mim_web" },
     { "sigla": "NU", "regione": "Sardegna", "url": "https://www.mim.gov.it/web/nuoro/interpelli", "parser": "mim_web" },
     { "sigla": "OR", "regione": "Sardegna", "url": "https://www.mim.gov.it/web/oristano/notizie", "parser": "mim_web" },
     { "sigla": "SS", "regione": "Sardegna", "url": "https://www.mim.gov.it/web/sassari/", "parser": "mim_web" },
@@ -74,7 +75,7 @@
     { "sigla": "AG", "regione": "Sicilia", "url": "https://ag.usr.sicilia.it/", "parser": "generic_wp" },
     { "sigla": "CL", "regione": "Sicilia", "url": "https://cl-en.usr.sicilia.it/", "parser": "generic_wp" },
     { "sigla": "CT", "regione": "Sicilia", "url": "https://ct.usr.sicilia.it/", "parser": "generic_wp" },
-    { "sigla": "EN", "regione": "Sicilia", "url": "https://en.usr.sicilia.it/", "parser": "generic_wp" },
+    { "sigla": "EN", "regione": "Sicilia", "url": "https://cl-en.usr.sicilia.it/", "parser": "generic_wp" },
     { "sigla": "ME", "regione": "Sicilia", "url": "https://me.usr.sicilia.it/category/personale-scuola/interpelli/interpelli-nazionali/", "parser": "generic_wp" },
     { "sigla": "PA", "regione": "Sicilia", "url": "https://pa.usr.sicilia.it/", "parser": "generic_wp" },
     { "sigla": "RG", "regione": "Sicilia", "url": "https://rg.usr.sicilia.it/", "parser": "generic_wp" },
@@ -90,16 +91,15 @@
     { "sigla": "PT", "regione": "Toscana", "url": "https://www.ufficioscolasticoprovinciale.pistoia.it/?s=INTERPELLO&submit=", "parser": "generic_wp" },
     { "sigla": "SI", "regione": "Toscana", "url": "https://www.uspsi.it/?cat=271", "parser": "generic_wp" },
     { "sigla": "TN", "regione": "Trentino-Alto Adige", "url": "https://www.vivoscuola.it/", "parser": "generic_wp" },
-    { "sigla": "BZ", "regione": "Trentino-Alto Adige", "url": "https://www.provincia.bz.it/it/formazione-scuola.asp", "parser": "generic_wp" },
     { "sigla": "PG", "regione": "Umbria", "url": "https://istruzione.umbria.it/interpelli/interpelli-aperti/", "parser": "umbria_table" },
     { "sigla": "TR", "regione": "Umbria", "url": "https://istruzione.umbria.it/interpelli/interpelli-aperti/", "parser": "umbria_table" },
     { "sigla": "AO", "regione": "Valle d'Aosta", "url": "https://www.regione.vda.it/istruzione/", "parser": "generic_wp" },
     { "sigla": "BL", "regione": "Veneto", "url": "https://belluno.istruzioneveneto.gov.it/news/area-amministrativa/interpelli/avvisi-finalizzati-al-reclutamento-di-docenti-da-parte-delle-scuole/", "parser": "generic_wp" },
     { "sigla": "PD", "regione": "Veneto", "url": "https://padova.istruzioneveneto.gov.it/category/interpelli-personale-docente/", "parser": "generic_wp" },
     { "sigla": "RO", "regione": "Veneto", "url": "https://rovigo.istruzioneveneto.gov.it/category/5-interpelli/docenti-rovigo/", "parser": "generic_wp" },
-    { "sigla": "TV", "regione": "Veneto", "url": "https://treviso.istruzioneveneto.gov.it/tabella-avvisi-finalizzati-al-reclutamento-om-88-2024-art-13-comma-23/", "parser": "generic_wp" },
+    { "sigla": "TV", "regione": "Veneto", "url": "https://treviso.istruzioneveneto.gov.it/?s=interpello", "parser": "generic_wp" },
     { "sigla": "VE", "regione": "Veneto", "url": "https://venezia.istruzioneveneto.gov.it/interpelli-supplenze/", "parser": "generic_wp" },
     { "sigla": "VR", "regione": "Veneto", "url": "https://verona.istruzioneveneto.gov.it/index.php/interpelli-settembre-2026/", "parser": "generic_wp" },
     { "sigla": "VI", "regione": "Veneto", "url": "https://vicenza.istruzioneveneto.gov.it/interpelli-om88/", "parser": "generic_wp" }
-  ] 
+  ]
 }
