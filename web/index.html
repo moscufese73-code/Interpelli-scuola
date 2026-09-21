@@ -3,53 +3,293 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InterpelliScuola Nazionale - Live</title>
+<title>InterpelliScuola Nazionale</title>
 <style>
-:root{ --bg:#0B1220; --surface:#121B2E; --border:#26324A; --text:#E9EEF9; --text-dim:#93A2C3; --accent:#3E7BFA; }
+:root{ --bg:#F4F6FB; --card:#FFFFFF; --border:#DDE3EF; --text:#1B2437; --dim:#6B7690; --field:#EEF1F8; --accent:#2358D0; }
 *{box-sizing:border-box;}
-body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;}
-header{padding:20px;border-bottom:1px solid var(--border);}
-h1{margin:0;font-size:20px;}
-.sub{color:var(--text-dim);font-size:13px;margin-top:4px;}
-.filters{display:flex;gap:10px;flex-wrap:wrap;padding:16px 20px;border-bottom:1px solid var(--border);}
-select,input{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:6px;font-size:13px;}
-table{width:100%;border-collapse:collapse;font-size:13px;}
-th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);}
-th{color:var(--text-dim);font-weight:600;font-size:11px;text-transform:uppercase;}
-a.btn{color:var(--accent);text-decoration:none;font-weight:600;}
-#status{padding:16px 20px;color:var(--text-dim);font-size:13px;}
-#status.error{color:#FF8A8A;}
-#more{padding:0 20px 30px;}
-#more button{background:var(--accent);color:#fff;border:0;border-radius:6px;padding:10px 16px;font-size:14px;font-weight:600;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+.wrap{max-width:960px;margin:0 auto;padding:16px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:18px;margin-bottom:16px;}
+h1{margin:0;font-size:24px;}
+.sub{color:var(--dim);font-size:14px;margin-top:6px;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+label{display:block;font-size:15px;color:var(--dim);margin-bottom:6px;}
+select,input{width:100%;background:var(--field);border:1px solid var(--border);border-radius:12px;padding:14px 12px;font-size:16px;color:var(--text);}
+.btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;}
+button{font-size:17px;font-weight:600;border-radius:12px;padding:14px 20px;border:1px solid var(--border);background:var(--field);color:var(--text);}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+#fonti{margin-top:16px;font-size:14px;}
+#fonti h3{margin:14px 0 6px;font-size:15px;}
+#fonti a{display:inline-block;margin:0 10px 6px 0;color:var(--accent);font-weight:600;text-decoration:none;}
+#status{color:var(--dim);font-size:14px;margin:0 4px 12px;line-height:1.5;}
+#status.error{color:#C0392B;font-weight:600;}
+.tablewrap{overflow-x:auto;padding:0;}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:880px;}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top;}
+th{color:var(--dim);font-weight:600;font-size:12px;text-transform:uppercase;}
+.dim{color:var(--dim);font-size:12px;margin-top:2px;}
+a.btn{color:var(--accent);text-decoration:none;font-weight:700;}
+.badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;}
+.b-open{background:#E3F6EA;color:#17803D;}
+.b-today{background:#FFF1DA;color:#B45309;}
+.b-closed{background:#FBE4E4;color:#B42318;}
+.b-nd{background:#ECEFF5;color:#5B6680;}
+.b-new{background:#E4ECFF;color:#2358D0;margin-left:6px;}
+#more{text-align:center;padding-bottom:30px;}
 </style>
 </head>
 <body>
-<header>
-<h1>InterpelliScuola Nazionale — Live</h1>
+<div class="wrap">
+
+<div class="card">
+<h1>InterpelliScuola Nazionale</h1>
 <div class="sub" id="freshness">Caricamento in corso...</div>
-</header>
-<div class="filters">
-<select id="fRegione"><option value="">Tutte le regioni</option></select>
-<select id="fProvincia"><option value="">Tutte le province</option></select>
-<select id="fTipologia"><option value="">Tutte le tipologie</option></select>
-<select id="fClasse"><option value="">Tutte le classi di concorso</option></select>
-<input type="text" id="fSearch" placeholder="Cerca scuola, comune, classe...">
 </div>
+
+<div class="card">
+<div class="grid">
+<div><label for="fRegione">Regione</label><select id="fRegione"><option value="">Tutte</option></select></div>
+<div><label for="fProvincia">Provincia</label><select id="fProvincia"><option value="">Tutte</option></select></div>
+<div><label for="fGrado">Grado scuola</label>
+<select id="fGrado">
+<option value="">Tutti</option>
+<option value="INF">Infanzia</option>
+<option value="PRI">Primaria</option>
+<option value="SEC1">Secondaria I</option>
+<option value="SEC2">Secondaria II</option>
+<option value="ATA">ATA</option>
+</select></div>
+<div><label for="fClasse">Classe di concorso</label><select id="fClasse"><option value="">Tutte</option></select></div>
+<div><label for="fStato">Stato</label>
+<select id="fStato">
+<option value="">Tutti</option>
+<option value="nuovo">Nuovo oggi</option>
+<option value="attivo">In corso / attivo</option>
+<option value="scade">In scadenza oggi</option>
+<option value="scaduto">Archiviato / scaduto</option>
+</select></div>
+<div><label for="fSearch">Cerca</label><input type="text" id="fSearch" placeholder="Scuola, comune, classe (es. A047)"></div>
+</div>
+<div class="btns">
+<button class="primary" id="btnCerca">🔍 Cerca</button>
+<button id="btnReset">Reset filtri</button>
+<button id="btnFonti">Fonti ufficiali</button>
+</div>
+<div id="fonti" hidden></div>
+</div>
+
 <div id="status"></div>
-<div style="overflow-x:auto;">
+<div class="card tablewrap" id="tablecard" hidden>
 <table>
-<thead><tr><th>Scuola</th><th>Localita</th><th>Classe</th><th>Tipologia</th><th>Pubblicato</th><th>Scadenza</th><th>Link</th></tr></thead>
+<thead><tr><th>Scuola</th><th>Localita</th><th>Grado</th><th>Classe di concorso</th><th>Pubblicato</th><th>Scadenza</th><th>Stato</th><th>Link</th></tr></thead>
 <tbody id="tbody"></tbody>
 </table>
 </div>
 <div id="more"></div>
+
+</div>
 <script>
+//__CLASSI_START
+const LINGUE = ["francese","inglese","spagnolo","tedesco","russo","albanese","sloveno","serbo-croato","cinese","giapponese","ebraico","arabo","neo-greco","portoghese"];
+const STRUMENTI = ["arpa","chitarra","clarinetto","corno","fagotto","fisarmonica","flauto dolce","oboe","percussioni","pianoforte","sassofono","tromba","violino","violoncello","canto","contrabbasso","organo","trombone","viola","basso tuba","clavicembalo","mandolino","flauto traverso"];
+const L = (i) => String.fromCharCode(65 + i);
+const D_MM = "nella scuola secondaria di I grado";
+const D_SS = "negli istituti di istruzione secondaria di II grado";
+
+const CLASSI = [];
+function add(c, d, g, now, note){ CLASSI.push({ c: c, d: d, g: g, now: now || "", note: note || "" }); }
+
+// Infanzia, primaria, sostegno, personale educativo
+add("AAAA", "Scuola dell'infanzia - posto comune", "INF");
+add("EEEE", "Scuola primaria - posto comune", "PRI");
+add("EEEM", "Scienze motorie e sportive nella scuola primaria", "PRI");
+add("ADAA", "Sostegno - scuola dell'infanzia", "INF");
+add("ADEE", "Sostegno - scuola primaria", "PRI");
+add("ADMM", "Sostegno - scuola secondaria di I grado", "SEC1");
+add("ADSS", "Sostegno - scuola secondaria di II grado", "SEC2");
+add("PPPP", "Personale educativo (convitti ed educandati)", "");
+
+// Codici numerici A0xx (comprese le classi con codice precedente al DM 255/2023)
+const NUM = [
+  ["A001", "Arte e immagine " + D_MM, "SEC1", "AM01"],
+  ["A002", "Design dei metalli, dell'oreficeria, delle pietre dure e delle gemme", "SEC2"],
+  ["A003", "Design della ceramica", "SEC2"],
+  ["A004", "Design del libro", "SEC2"],
+  ["A005", "Design del tessuto e della moda", "SEC2"],
+  ["A006", "Design del vetro", "SEC2"],
+  ["A007", "Discipline audiovisive", "SEC2"],
+  ["A008", "Discipline geometriche, architettura, design d'arredamento e scenotecnica", "SEC2"],
+  ["A009", "Discipline grafiche, pittoriche e scenografiche", "SEC2"],
+  ["A010", "Discipline grafico-pubblicitarie", "SEC2"],
+  ["A011", "Discipline letterarie e latino", "SEC2"],
+  ["A012", "Discipline letterarie " + D_SS, "SEC2", "AS12"],
+  ["A013", "Discipline letterarie, latino e greco", "SEC2"],
+  ["A014", "Discipline plastiche, scultoree e scenoplastiche", "SEC2"],
+  ["A015", "Discipline sanitarie", "SEC2"],
+  ["A016", "Disegno artistico e modellazione odontotecnica", "SEC2"],
+  ["A017", "Disegno e storia dell'arte " + D_SS, "SEC2", "AS01"],
+  ["A018", "Filosofia e scienze umane", "SEC2"],
+  ["A019", "Filosofia e storia", "SEC2"],
+  ["A020", "Fisica", "SEC2"],
+  ["A021", "Geografia", "SEC2"],
+  ["A022", "Italiano, storia, geografia " + D_MM, "SEC1", "AM12"],
+  ["A023", "Lingua italiana per discenti di lingua straniera (alloglotti)", "SEC1,SEC2"],
+  ["A024", "Lingue e culture straniere " + D_SS, "SEC2", "", "AS2A-AS2N"],
+  ["A025", "Lingua inglese e seconda lingua comunitaria " + D_MM, "SEC1", "", "AM2A-AM2G"],
+  ["A026", "Matematica", "SEC2"],
+  ["A027", "Matematica e fisica", "SEC2"],
+  ["A028", "Matematica e scienze " + D_MM, "SEC1"],
+  ["A029", "Musica " + D_SS, "SEC2", "AS30"],
+  ["A030", "Musica " + D_MM, "SEC1", "AM30"],
+  ["A031", "Scienze degli alimenti", "SEC2"],
+  ["A032", "Scienze della geologia e della mineralogia", "SEC2"],
+  ["A033", "Scienze e tecnologie aeronautiche", "SEC2"],
+  ["A034", "Scienze e tecnologie chimiche", "SEC2"],
+  ["A035", "Scienze e tecnologie della calzatura e della moda", "SEC2"],
+  ["A036", "Scienze e tecnologie della logistica", "SEC2"],
+  ["A037", "Scienze e tecnologie delle costruzioni, tecnologie e tecniche di rappresentazione grafica", "SEC2"],
+  ["A038", "Scienze e tecnologie delle costruzioni aeronautiche", "SEC2"],
+  ["A039", "Scienze e tecnologie delle costruzioni navali", "SEC2"],
+  ["A040", "Scienze e tecnologie elettriche ed elettroniche", "SEC2"],
+  ["A041", "Scienze e tecnologie informatiche", "SEC2"],
+  ["A042", "Scienze e tecnologie meccaniche", "SEC2"],
+  ["A043", "Scienze e tecnologie nautiche", "SEC2"],
+  ["A044", "Scienze e tecnologie tessili, dell'abbigliamento e della moda", "SEC2"],
+  ["A045", "Scienze economico-aziendali", "SEC2"],
+  ["A046", "Scienze giuridico-economiche", "SEC2"],
+  ["A047", "Scienze matematiche applicate", "SEC2"],
+  ["A048", "Scienze motorie e sportive " + D_SS, "SEC2", "AS48"],
+  ["A049", "Scienze motorie e sportive " + D_MM, "SEC1", "AM48"],
+  ["A050", "Scienze naturali, chimiche e biologiche", "SEC2"],
+  ["A051", "Scienze, tecnologie e tecniche agrarie", "SEC2"],
+  ["A052", "Scienze, tecnologie e tecniche di produzioni animali", "SEC2"],
+  ["A053", "Storia della musica e della danza", "SEC2"],
+  ["A054", "Storia dell'arte", "SEC2"],
+  ["A055", "Strumento musicale " + D_SS + " (tutti gli strumenti)", "SEC2"],
+  ["A056", "Strumento musicale " + D_MM + " (tutti gli strumenti)", "SEC1"],
+  ["A057", "Tecnica della danza classica", "SEC2"],
+  ["A058", "Tecnica della danza contemporanea", "SEC2"],
+  ["A059", "Tecniche di accompagnamento alla danza e teoria e pratica musicale per la danza", "SEC2"],
+  ["A060", "Tecnologia " + D_MM, "SEC1"],
+  ["A061", "Tecnologie e tecniche delle comunicazioni multimediali", "SEC2"],
+  ["A062", "Tecnologie e tecniche per la grafica", "SEC2"],
+  ["A063", "Tecnologie musicali", "SEC2"],
+  ["A064", "Teoria, analisi e composizione", "SEC2"],
+  ["A065", "Teoria e tecnica della comunicazione", "SEC2"],
+  ["A066", "Trattamento testi, dati ed applicazioni. Informatica (ad esaurimento)", "SEC2"],
+  ["A074", "Discipline letterarie e latino con lingua di insegnamento slovena", "SEC2"],
+  ["A075", "Discipline letterarie, latino e greco con lingua di insegnamento slovena", "SEC2"],
+  ["A076", "Trattamento testi, dati ed applicazioni, Informatica negli istituti professionali con lingua di insegnamento slovena (ad esaurimento)", "SEC2"],
+  ["A077", "Lingua e cultura ladina, storia ed educazione civica, geografia " + D_MM + " con lingua di insegnamento ladina", "SEC1"],
+  ["A078", "Lingua e cultura ladina, storia ed educazione civica, geografia " + D_SS, "SEC2"],
+  ["A079", "Discipline letterarie (italiano seconda lingua) " + D_SS + " in lingua tedesca", "SEC2"],
+  ["A080", "Discipline letterarie " + D_SS + " in lingua tedesca e con lingua di insegnamento tedesca delle localita ladine", "SEC2"],
+  ["A081", "Discipline letterarie e latino nei licei in lingua tedesca e con lingua di insegnamento tedesca delle localita ladine", "SEC2"],
+  ["A082", "Discipline letterarie, latino e greco nel liceo classico in lingua tedesca e con lingua di insegnamento tedesca delle localita ladine", "SEC2"],
+  ["A083", "Discipline letterarie (tedesco seconda lingua) " + D_SS + " in lingua italiana della provincia di Bolzano", "SEC2"],
+  ["A084", "Tedesco (seconda lingua), storia ed educazione civica, geografia " + D_MM + " con lingua di insegnamento italiana della provincia di Bolzano", "SEC1"],
+  ["A085", "Tedesco, storia ed educazione civica, geografia " + D_MM + " con lingua di insegnamento tedesca della provincia di Bolzano", "SEC1"],
+  ["A086", "Filosofia, psicologia e scienze dell'educazione (ad esaurimento)", "SEC2"]
+];
+NUM.sort((a, b) => a[0].localeCompare(b[0]));
+NUM.forEach(x => add(x[0], x[1], x[2], x[3], x[4]));
+
+// Codici DM 255/2023 - secondaria di I grado (AM)
+add("AM01", "Arte e immagine " + D_MM, "SEC1");
+add("AM12", "Italiano, storia, geografia " + D_MM, "SEC1");
+for(let i = 0; i < 7; i++){
+  add("AM2" + L(i), "Lingua inglese e seconda lingua comunitaria " + D_MM + " (" + LINGUE[i] + ")", "SEC1");
+}
+add("AM30", "Musica " + D_MM, "SEC1");
+add("AM48", "Scienze motorie e sportive " + D_MM, "SEC1");
+add("AM70", "Italiano, storia, educazione civica, geografia " + D_MM + " con lingua di insegnamento slovena o bilingue", "SEC1");
+add("AM71", "Sloveno, storia, educazione civica, geografia " + D_MM + " con lingua di insegnamento slovena o bilingue", "SEC1");
+
+// Codici DM 255/2023 - secondaria di II grado (AS)
+add("AS01", "Disegno e storia dell'arte " + D_SS, "SEC2");
+add("AS12", "Discipline letterarie " + D_SS, "SEC2");
+for(let i = 0; i < 14; i++){
+  add("AS2" + L(i), "Lingue e culture straniere " + D_SS + " (" + LINGUE[i] + ")", "SEC2");
+}
+add("AS30", "Musica " + D_SS, "SEC2");
+add("AS48", "Scienze motorie e sportive " + D_SS, "SEC2");
+add("AS70", "Discipline letterarie (italiano seconda lingua) " + D_SS + " con lingua di insegnamento slovena", "SEC2");
+add("AS71", "Discipline letterarie nelle scuole secondarie di II grado con lingua di insegnamento slovena o bilingue", "SEC2");
+
+// Codici precedenti delle lingue straniere (AA24-AN24 e AA25-AG25)
+for(let i = 0; i < 14; i++){
+  add("A" + L(i) + "24", "Lingue e culture straniere " + D_SS + " (" + LINGUE[i] + ")", "SEC2", "AS2" + L(i));
+}
+for(let i = 0; i < 7; i++){
+  add("A" + L(i) + "25", "Lingua inglese e seconda lingua comunitaria " + D_MM + " (" + LINGUE[i] + ")", "SEC1", "AM2" + L(i));
+}
+
+// Strumento musicale
+for(let i = 0; i < 23; i++){
+  add("A" + L(i) + "55", "Strumento musicale " + D_SS + " (" + STRUMENTI[i] + ")", "SEC2");
+}
+for(let i = 0; i < 14; i++){
+  add("A" + L(i) + "56", "Strumento musicale " + D_MM + " (" + STRUMENTI[i] + ")", "SEC1");
+}
+
+// Classi B (laboratori, conversazione)
+const BLIST = [
+  ["B001", "Attivita pratiche speciali (ad esaurimento)"],
+  ["B002", "Conversazione in lingua straniera"],
+  ["B003", "Laboratori di fisica"],
+  ["B004", "Laboratori di liuteria"],
+  ["B005", "Laboratorio di logistica"],
+  ["B006", "Laboratorio di odontotecnica"],
+  ["B007", "Laboratorio di ottica"],
+  ["B008", "Laboratori di produzioni industriali ed artigianali della ceramica"],
+  ["B009", "Laboratori di scienze e tecnologie aeronautiche"],
+  ["B010", "Laboratori di scienze e tecnologie delle costruzioni aeronautiche"],
+  ["B011", "Laboratori di scienze e tecnologie agrarie"],
+  ["B012", "Laboratori di scienze e tecnologie chimiche e microbiologiche"],
+  ["B013", "Laboratori di scienze e tecnologie della calzatura e della moda"],
+  ["B014", "Laboratori di scienze e tecnologie delle costruzioni"],
+  ["B015", "Laboratori di scienze e tecnologie elettriche ed elettroniche"],
+  ["B016", "Laboratori di scienze e tecnologie informatiche"],
+  ["B017", "Laboratori di scienze e tecnologie meccaniche"],
+  ["B018", "Laboratori di scienze e tecnologie tessili, dell'abbigliamento e della moda"],
+  ["B019", "Laboratori di servizi di ricettivita alberghiera"],
+  ["B020", "Laboratori di servizi enogastronomici, settore cucina"],
+  ["B021", "Laboratori di servizi enogastronomici, settore sala e vendita"],
+  ["B022", "Laboratori di tecnologie e tecniche delle comunicazioni multimediali"],
+  ["B023", "Laboratori per i servizi socio-sanitari"],
+  ["B024", "Laboratorio di scienze e tecnologie nautiche"],
+  ["B025", "Laboratorio di scienze e tecnologie delle costruzioni navali"],
+  ["B026", "Laboratorio di tecnologie del legno"],
+  ["B027", "Laboratorio di tecnologie del marmo"],
+  ["B028", "Laboratorio di tecnologie orafe"],
+  ["B029", "Gabinetto fisioterapico (ad esaurimento)"],
+  ["B030", "Addetto all'ufficio tecnico (ad esaurimento)"],
+  ["B031", "Esercitazioni pratiche per centralinisti telefonici (ad esaurimento)"],
+  ["B032", "Esercitazioni di pratica professionale (ad esaurimento)"],
+  ["B033", "Assistente di laboratorio (ad esaurimento)"]
+];
+BLIST.forEach(x => add(x[0], x[1], "SEC2"));
+for(let i = 0; i < 14; i++){
+  add("B" + L(i) + "02", "Conversazione in lingua straniera (" + LINGUE[i] + ")", "SEC2");
+}
+
+const CLASS_BY_CODE = {};
+const NOW_MAP = {};
+CLASSI.forEach(k => {
+  CLASS_BY_CODE[k.c] = k;
+  if(k.now) NOW_MAP[k.c] = k.now;
+});
+const canon = (c) => NOW_MAP[c] || c;
+//__CLASSI_END
+
 const SUPABASE_URL = "https://beehymkhsmkgbbtllbvk.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlZWh5bWtoc21rZ2JidGxsYnZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4NjgyOTQsImV4cCI6MjEwNTQ0NDI5NH0.DsV9Z5HilXzPMLVVkQYTVryO11JP0NWF7SUfQA8keF0";
 
 const PAGE_SIZE = 1000;
 const SHOW_STEP = 300;
-const NONE = "__none__";
+const GRADO_LABEL = { INF: "Infanzia", PRI: "Primaria", SEC1: "Secondaria I", SEC2: "Secondaria II", ATA: "ATA" };
+const ATA_RE = /\b(ata|collaborator[ei] scolastic[oi]|assistent[ei] (amministrativ[oi]|tecnic[oi])|cuoc[oh]i?|infermier[ei]|guardarobier[ei]|addett[oi] alle aziende agrarie)\b/i;
+
 let allRecords = [];
 let filtered = [];
 let shown = SHOW_STEP;
@@ -59,7 +299,7 @@ const $ = (id) => document.getElementById(id);
 function fmtDate(s){
   if(!s) return "—";
   const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s);
-  return m ? `${m[3]}/${m[2]}/${m[1]}` : s;
+  return m ? m[3] + "/" + m[2] + "/" + m[1] : s;
 }
 
 function safeUrl(u){
@@ -71,25 +311,58 @@ function safeUrl(u){
   }
 }
 
+function todayISO(){
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+
+function classLabel(k){
+  const extra = k.now ? " [ora " + k.now + "]" : (k.note ? " [ora " + k.note + "]" : "");
+  return k.c + " - " + k.d + extra;
+}
+
+function statoOf(r, today){
+  const sca = (r.data_scadenza || "").slice(0, 10);
+  if(!sca) return { key: "nd", label: "Scadenza non indicata", cls: "b-nd" };
+  if(sca < today) return { key: "chiuso", label: "Chiuso", cls: "b-closed" };
+  if(sca === today) return { key: "oggi", label: "Scade oggi", cls: "b-today" };
+  return { key: "aperto", label: "Aperto", cls: "b-open" };
+}
+
+function isNuovo(r, today){
+  return (r.data_pubblicazione || "").slice(0, 10) === today;
+}
+
 async function fetchAll(){
   const out = [];
   let offset = 0;
   for(let i = 0; i < 50; i++){
-    const url = `${SUPABASE_URL}/rest/v1/interpelli?select=*&order=data_pubblicazione.desc.nullslast,record_key.asc&limit=${PAGE_SIZE}&offset=${offset}`;
+    const url = SUPABASE_URL + "/rest/v1/interpelli?select=*&order=data_pubblicazione.desc.nullslast,record_key.asc&limit=" + PAGE_SIZE + "&offset=" + offset;
     const res = await fetch(url, {
-      headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
     });
     if(!res.ok){
       const t = await res.text();
-      throw new Error(`Il database ha risposto ${res.status}: ${t.slice(0, 200)}`);
+      throw new Error("Il database ha risposto " + res.status + ": " + t.slice(0, 200));
     }
     const batch = await res.json();
     if(!Array.isArray(batch) || batch.length === 0) break;
     out.push(...batch);
-    $("freshness").textContent = `Caricamento in corso... ${out.length} interpelli`;
+    $("freshness").textContent = "Caricamento in corso... " + out.length + " interpelli";
     offset += batch.length;
   }
   return out;
+}
+
+function prepare(r){
+  r._c = (r.classe_concorso || "").toUpperCase().trim();
+  r._canon = canon(r._c);
+  const k = CLASS_BY_CODE[r._c] || CLASS_BY_CODE[r._canon];
+  let gradi = k && k.g ? k.g.split(",") : [];
+  if(gradi.length === 0 && ATA_RE.test(r.scuola || "")) gradi = ["ATA"];
+  r._gradi = gradi;
+  r._hay = [r.scuola, r.comune, r.classe_concorso, k ? k.d : "", r.provincia, r.regione, r.codice_meccanografico, r.tipologia_posto]
+    .filter(Boolean).join(" ").toLowerCase();
 }
 
 function addOption(sel, value, label){
@@ -108,46 +381,71 @@ function fillRegioni(){
 function fillProvince(){
   const reg = $("fRegione").value;
   const sel = $("fProvincia");
-  sel.innerHTML = '<option value="">Tutte le province</option>';
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">Tutte</option>';
   const provs = [...new Set(
     allRecords.filter(r => !reg || r.regione === reg).map(r => r.provincia).filter(Boolean)
   )].sort();
   provs.forEach(p => addOption(sel, p, p));
-}
-
-function fillTipologie(){
-  const tips = [...new Set(allRecords.map(r => r.tipologia_posto).filter(Boolean))]
-    .sort((a, b) => a.localeCompare(b, "it"));
-  tips.forEach(t => addOption($("fTipologia"), t, t));
-  addOption($("fTipologia"), NONE, "Non indicata");
+  if(provs.includes(prev)) sel.value = prev;
 }
 
 function fillClassi(){
-  const cls = [...new Set(allRecords.map(r => r.classe_concorso).filter(Boolean))]
-    .sort((a, b) => a.localeCompare(b, "it"));
-  cls.forEach(c => addOption($("fClasse"), c, c));
+  const grado = $("fGrado").value;
+  const sel = $("fClasse");
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">Tutte</option>';
+  CLASSI.forEach(k => {
+    if(grado && !k.g.split(",").includes(grado)) return;
+    addOption(sel, k.c, classLabel(k));
+  });
+  if(prev && [...sel.options].some(o => o.value === prev)) sel.value = prev;
+}
+
+function hasSearch(){
+  return !!($("fRegione").value || $("fProvincia").value || $("fGrado").value ||
+            $("fClasse").value || $("fStato").value || $("fSearch").value.trim());
+}
+
+function statoOk(r, stato, today){
+  const sca = (r.data_scadenza || "").slice(0, 10);
+  if(stato === "nuovo") return isNuovo(r, today);
+  if(stato === "attivo") return !sca || sca >= today;
+  if(stato === "scade") return sca === today;
+  if(stato === "scaduto") return !!sca && sca < today;
+  return true;
 }
 
 function applyFilters(){
+  shown = SHOW_STEP;
+  if(!hasSearch()){
+    filtered = [];
+    render();
+    return;
+  }
   const reg = $("fRegione").value;
   const prov = $("fProvincia").value;
-  const tip = $("fTipologia").value;
+  const grado = $("fGrado").value;
   const cls = $("fClasse").value;
+  const stato = $("fStato").value;
   const q = $("fSearch").value.trim().toLowerCase();
+  const today = todayISO();
+  const clsCanon = cls ? canon(cls) : "";
+  const qUp = q.toUpperCase();
+  const qClass = CLASS_BY_CODE[qUp] ? canon(qUp) : "";
   filtered = allRecords.filter(r => {
     if(reg && r.regione !== reg) return false;
     if(prov && r.provincia !== prov) return false;
-    if(tip === NONE){ if(r.tipologia_posto) return false; }
-    else if(tip && r.tipologia_posto !== tip) return false;
-    if(cls && r.classe_concorso !== cls) return false;
-    if(q){
-      const hay = [r.scuola, r.comune, r.classe_concorso, r.provincia, r.regione, r.codice_meccanografico, r.tipologia_posto]
-        .filter(Boolean).join(" ").toLowerCase();
-      if(!hay.includes(q)) return false;
+    if(grado && !r._gradi.includes(grado)) return false;
+    if(clsCanon && r._canon !== clsCanon) return false;
+    if(!statoOk(r, stato, today)) return false;
+    if(qClass){
+      if(r._canon !== qClass) return false;
+    }else if(q && !r._hay.includes(q)){
+      return false;
     }
     return true;
   });
-  shown = SHOW_STEP;
   render();
 }
 
@@ -157,19 +455,78 @@ function cell(text){
   return td;
 }
 
+function classCell(r){
+  const td = document.createElement("td");
+  if(!r._c){
+    td.textContent = "—";
+    return td;
+  }
+  const b = document.createElement("strong");
+  b.textContent = r._c;
+  td.appendChild(b);
+  const k = CLASS_BY_CODE[r._c];
+  if(k){
+    const s = document.createElement("div");
+    s.className = "dim";
+    s.textContent = k.d;
+    td.appendChild(s);
+  }
+  return td;
+}
+
+function statoCell(r, today){
+  const td = document.createElement("td");
+  const s = statoOf(r, today);
+  const b = document.createElement("span");
+  b.className = "badge " + s.cls;
+  b.textContent = s.label;
+  td.appendChild(b);
+  if(isNuovo(r, today)){
+    const n = document.createElement("span");
+    n.className = "badge b-new";
+    n.textContent = "Nuovo";
+    td.appendChild(n);
+  }
+  return td;
+}
+
 function render(){
   const tb = $("tbody");
   tb.innerHTML = "";
+  $("more").innerHTML = "";
+  const st = $("status");
+  st.className = "";
+
+  if(!hasSearch()){
+    $("tablecard").hidden = true;
+    st.textContent = "Scegli una regione, un grado, una classe di concorso oppure scrivi nella ricerca (es. A047), poi tocca Cerca. Senza una ricerca non viene mostrato nulla.";
+    return;
+  }
+  if(filtered.length === 0){
+    $("tablecard").hidden = true;
+    st.textContent = "Nessun interpello trovato per questa ricerca.";
+    return;
+  }
+
+  const today = todayISO();
+  $("tablecard").hidden = false;
+
+  const c = { aperto: 0, oggi: 0, chiuso: 0, nd: 0 };
+  filtered.forEach(r => { c[statoOf(r, today).key]++; });
+  st.textContent = "Trovati " + filtered.length + " interpelli: " + (c.aperto + c.oggi) + " aperti, " +
+    c.chiuso + " chiusi, " + c.nd + " senza scadenza indicata. Mostrati " + Math.min(shown, filtered.length) + ".";
+
   const frag = document.createDocumentFragment();
   filtered.slice(0, shown).forEach(r => {
     const tr = document.createElement("tr");
     tr.appendChild(cell(r.scuola || "—"));
     const loc = r.comune || [r.provincia, r.regione].filter(Boolean).join(" · ") || "—";
     tr.appendChild(cell(loc));
-    tr.appendChild(cell(r.classe_concorso || "—"));
-    tr.appendChild(cell(r.tipologia_posto || "—"));
+    tr.appendChild(cell(r._gradi.map(g => GRADO_LABEL[g]).join(" / ") || "—"));
+    tr.appendChild(classCell(r));
     tr.appendChild(cell(fmtDate(r.data_pubblicazione)));
     tr.appendChild(cell(fmtDate(r.data_scadenza)));
+    tr.appendChild(statoCell(r, today));
     const td = document.createElement("td");
     const u = safeUrl(r.url_diretto);
     if(u){
@@ -188,34 +545,75 @@ function render(){
   });
   tb.appendChild(frag);
 
-  const st = $("status");
-  st.className = "";
-  if(filtered.length === 0){
-    st.textContent = "Nessun interpello trovato con questi filtri.";
-  }else{
-    st.textContent = `Mostrati ${Math.min(shown, filtered.length)} di ${filtered.length} interpelli`;
-  }
-
-  const more = $("more");
-  more.innerHTML = "";
   if(shown < filtered.length){
     const b = document.createElement("button");
+    b.className = "primary";
     b.textContent = "Mostra altri";
     b.onclick = () => { shown += SHOW_STEP; render(); };
-    more.appendChild(b);
+    $("more").appendChild(b);
+  }
+}
+
+function resetFilters(){
+  $("fRegione").value = "";
+  $("fGrado").value = "";
+  $("fStato").value = "";
+  $("fSearch").value = "";
+  fillProvince();
+  $("fProvincia").value = "";
+  fillClassi();
+  $("fClasse").value = "";
+  applyFilters();
+}
+
+async function toggleFonti(){
+  const box = $("fonti");
+  if(!box.hidden){
+    box.hidden = true;
+    return;
+  }
+  box.hidden = false;
+  if(box.dataset.loaded) return;
+  box.textContent = "Caricamento fonti...";
+  try{
+    const res = await fetch("../sources_config.json", { cache: "no-store" });
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const cfg = await res.json();
+    box.textContent = "";
+    const byReg = {};
+    cfg.sources.forEach(s => { (byReg[s.regione] = byReg[s.regione] || []).push(s); });
+    Object.keys(byReg).sort((a, b) => a.localeCompare(b, "it")).forEach(reg => {
+      const h = document.createElement("h3");
+      h.textContent = reg;
+      box.appendChild(h);
+      byReg[reg].forEach(s => {
+        const u = safeUrl(s.url);
+        if(!u) return;
+        const a = document.createElement("a");
+        a.href = u;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = s.sigla;
+        box.appendChild(a);
+      });
+    });
+    box.dataset.loaded = "1";
+  }catch(e){
+    box.textContent = "Impossibile caricare l'elenco delle fonti (" + (e && e.message ? e.message : e) + ").";
   }
 }
 
 async function init(){
+  fillClassi();
+  render();
   try{
     allRecords = await fetchAll();
+    allRecords.forEach(prepare);
     const last = allRecords.map(r => r.last_seen_at).filter(Boolean).sort().pop();
     const when = last ? new Date(last).toLocaleString("it-IT") : "n.d.";
-    $("freshness").textContent = `${allRecords.length} interpelli · ultimo aggiornamento: ${when}`;
+    $("freshness").textContent = allRecords.length + " interpelli in archivio · ultimo aggiornamento: " + when;
     fillRegioni();
     fillProvince();
-    fillTipologie();
-    fillClassi();
     applyFilters();
   }catch(e){
     $("freshness").textContent = "Errore nel caricamento dei dati";
@@ -227,9 +625,14 @@ async function init(){
 
 $("fRegione").addEventListener("change", () => { fillProvince(); applyFilters(); });
 $("fProvincia").addEventListener("change", applyFilters);
-$("fTipologia").addEventListener("change", applyFilters);
+$("fGrado").addEventListener("change", () => { fillClassi(); applyFilters(); });
 $("fClasse").addEventListener("change", applyFilters);
+$("fStato").addEventListener("change", applyFilters);
 $("fSearch").addEventListener("input", applyFilters);
+$("fSearch").addEventListener("keydown", (e) => { if(e.key === "Enter") applyFilters(); });
+$("btnCerca").addEventListener("click", () => { applyFilters(); $("status").scrollIntoView({ behavior: "smooth" }); });
+$("btnReset").addEventListener("click", resetFilters);
+$("btnFonti").addEventListener("click", toggleFonti);
 init();
 </script>
 </body>
