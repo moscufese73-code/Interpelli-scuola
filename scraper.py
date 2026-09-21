@@ -7,13 +7,15 @@ con euristiche per struttura HTML, e produce data/interpelli.json.
 Se sono presenti le variabili d'ambiente SUPABASE_URL e SUPABASE_KEY,
 sincronizza (upsert) i risultati anche su una tabella Supabase.
 
-Novita' rispetto alla versione precedente:
-- User-Agent da browser (molti siti rispondevano 403 a "InterpelliScuolaBot")
-- Retry automatici con attesa su 429/500/502/503/504
-- Link relativi trasformati in assoluti
-- Upsert Supabase con on_conflict=record_key e messaggio d'errore completo
-- Riepilogo finale dei siti falliti; la run diventa ROSSA se non trova nulla
-  o se la sincronizzazione Supabase fallisce (cosi' non resta "verde a vuoto")
+Novita' di questa versione:
+- La chiave del record include la provincia: due province che usano lo stesso
+  sito (es. Chieti e Pescara) non si sovrascrivono piu'.
+- Una fonte con lo stesso indirizzo di una fonte di un'ALTRA regione viene
+  saltata (evita dati di una regione etichettati con un'altra).
+- Ogni pagina viene scaricata una sola volta anche se usata da piu' province.
+- Dopo una sincronizzazione riuscita vengono tolti i record che non sono piu'
+  presenti sulle fonti (senza toccare le province la cui fonte e' irraggiungibile).
+- Il nome della scuola non viene piu' preso dentro una parola (es. "pubblicati").
 """
 
 import json
@@ -50,8 +52,14 @@ DATE_PATTERNS = [
     re.compile(r"\b(\d{1,2})[/\-.](\d{1,2})[/\-.](\d{2,4})\b"),
     re.compile(r"\b(\d{4})-(\d{2})-(\d{2})\b"),
 ]
+SCUOLA_PATTERN = re.compile(
+    r"((?<![A-Za-z])(?:Istituto|IC|I\.C\.|IIS|I\.I\.S\.|Liceo|ITC|ITIS|Direzione Didattica)"
+    r"(?![a-z])[^\n,.;]{3,70})",
+    re.I,
+)
 
-FAILED = []  # elenco (url, motivo) dei siti non scaricati
+FAILED = []   # (url, motivo) dei siti non scaricati
+SKIPPED = []  # (sigla, motivo) delle fonti saltate
 
 
 def make_session():
@@ -93,10 +101,12 @@ def normalize_date(raw):
 
 def record_key(rec):
     raw = "|".join([
+        (rec.get("provincia") or "").strip().upper(),
         (rec.get("scuola") or "").strip().lower(),
         (rec.get("classeConcorso") or "").strip().lower(),
         (rec.get("comune") or "").strip().lower(),
         (rec.get("dataPubblicazione") or ""),
+        (rec.get("urlDiretto") or "").strip(),
     ])
     return hashlib.sha1(raw.encode("utf-8")).hexdigest()
 
@@ -147,7 +157,7 @@ def extract_from_block(text, url, sigla, regione):
         rec["tipologiaPosto"] = "Sostegno"
     elif re.search(r"posto comune", text, re.I):
         rec["tipologiaPosto"] = "Posto Comune"
-    m = re.search(r"((?:Istituto|IC|I\.C\.|IIS|I\.I\.S\.|Liceo|ITC|ITIS|Direzione Didattica)[^\n,.;]{3,70})", text, re.I)
+    m = SCUOLA_PATTERN.search(text)
     rec["scuola"] = m.group(1).strip() if m else text.strip()[:80]
     return rec
 
@@ -220,24 +230,46 @@ PARSERS = {
 
 
 def scrape_all(config):
+    """Ritorna (record, siglas_falliti)."""
     all_records = []
+    failed_siglas = set()
+    fetched = {}      # url -> html (o None se fallito): ogni pagina una sola volta
+    url_region = {}   # url -> regione della prima fonte che lo usa
+
     for src in config["sources"]:
         sigla, regione, url, parser_name = src["sigla"], src["regione"], src["url"], src["parser"]
         print(f"-> {regione} / {sigla}: {url}")
-        html = fetch(url)
-        if not html:
+
+        prima = url_region.get(url)
+        if prima and prima != regione:
+            motivo = f"stesso indirizzo di una fonte di {prima}: saltata per non mescolare le regioni"
+            print(f"   [SALTATA] {motivo}")
+            SKIPPED.append((sigla, motivo))
             continue
+        url_region.setdefault(url, regione)
+
+        if url in fetched:
+            html = fetched[url]
+        else:
+            html = fetch(url)
+            fetched[url] = html
+            if html:
+                time.sleep(1.5)
+        if not html:
+            failed_siglas.add(sigla)
+            continue
+
         parser = PARSERS.get(parser_name, parser_generic_wp)
         try:
             records = parser(html, url, sigla, regione)
         except Exception as e:
             print(f"  [ERRORE parser {parser_name}] {e}", file=sys.stderr)
             FAILED.append((url, f"parser {parser_name}: {e}"))
+            failed_siglas.add(sigla)
             records = []
         print(f"   trovati {len(records)} possibili record")
         all_records.extend(records)
-        time.sleep(1.5)
-    return all_records
+    return all_records, failed_siglas
 
 
 def dedupe(records):
@@ -247,18 +279,25 @@ def dedupe(records):
     return list(seen.values())
 
 
-def push_to_supabase(records):
-    """Ritorna True se ok (o saltato), False se la sincronizzazione e' fallita."""
+def supabase_env():
     url = os.environ.get("SUPABASE_URL")
     key = os.environ.get("SUPABASE_KEY")
     if not url or not key:
+        return None, None
+    return url.rstrip("/"), key
+
+
+def push_to_supabase(records):
+    """Ritorna True se ok (o saltato), False se la sincronizzazione e' fallita."""
+    url, key = supabase_env()
+    if not url:
         print("[ATTENZIONE] SUPABASE_URL / SUPABASE_KEY non impostate: salto la sincronizzazione remota.")
         return True
     if not records:
         print("Nessun record da sincronizzare su Supabase.")
         return True
 
-    endpoint = f"{url.rstrip('/')}/rest/v1/interpelli?on_conflict=record_key"
+    endpoint = f"{url}/rest/v1/interpelli?on_conflict=record_key"
     headers = {
         "apikey": key,
         "Authorization": f"Bearer {key}",
@@ -300,9 +339,32 @@ def push_to_supabase(records):
     return ok
 
 
+def delete_stale(run_start, failed_siglas):
+    """Toglie i record non piu' presenti sulle fonti (non aggiornati in questa esecuzione).
+    Le province la cui fonte non e' raggiungibile non vengono toccate."""
+    url, key = supabase_env()
+    if not url:
+        return
+    endpoint = f"{url}/rest/v1/interpelli"
+    headers = {"apikey": key, "Authorization": f"Bearer {key}", "Prefer": "return=minimal"}
+    params = {"last_seen_at": "lt." + run_start}
+    if failed_siglas:
+        params["provincia"] = "not.in.(" + ",".join(sorted(failed_siglas)) + ")"
+    try:
+        resp = requests.delete(endpoint, headers=headers, params=params, timeout=60)
+        if resp.status_code >= 400:
+            print(f"[ATTENZIONE] pulizia dei record vecchi non riuscita ({resp.status_code}): {resp.text[:300]}",
+                  file=sys.stderr)
+        else:
+            print("Pulizia: tolti i record non piu' presenti sulle fonti.")
+    except requests.RequestException as e:
+        print(f"[ATTENZIONE] pulizia dei record vecchi non riuscita: {e}", file=sys.stderr)
+
+
 def main():
+    run_start = datetime.now(timezone.utc).isoformat()
     config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
-    records = scrape_all(config)
+    records, failed_siglas = scrape_all(config)
     records = dedupe(records)
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(json.dumps({
@@ -315,10 +377,15 @@ def main():
     sync_ok = push_to_supabase(records)
 
     total = len(config["sources"])
+    if sync_ok and records and len(failed_siglas) <= 0.15 * total:
+        delete_stale(run_start, failed_siglas)
+
     print("\n===== RIEPILOGO =====")
-    print(f"Fonti totali: {total} | non scaricate: {len(FAILED)} | record trovati: {len(records)}")
+    print(f"Fonti totali: {total} | non scaricate: {len(failed_siglas)} | saltate: {len(SKIPPED)} | record trovati: {len(records)}")
     for u, motivo in FAILED:
         print(f"  - {u} -> {motivo}")
+    for s, motivo in SKIPPED:
+        print(f"  - {s}: {motivo}")
 
     if not records:
         print("[ERRORE] Nessun interpello trovato: controlla le fonti sopra.", file=sys.stderr)
