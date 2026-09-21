@@ -31,12 +31,14 @@ a.btn{color:var(--accent);text-decoration:none;font-weight:600;}
 <div class="filters">
 <select id="fRegione"><option value="">Tutte le regioni</option></select>
 <select id="fProvincia"><option value="">Tutte le province</option></select>
+<select id="fTipologia"><option value="">Tutte le tipologie</option></select>
+<select id="fClasse"><option value="">Tutte le classi di concorso</option></select>
 <input type="text" id="fSearch" placeholder="Cerca scuola, comune, classe...">
 </div>
 <div id="status"></div>
 <div style="overflow-x:auto;">
 <table>
-<thead><tr><th>Scuola</th><th>Localita</th><th>Classe</th><th>Pubblicato</th><th>Scadenza</th><th>Link</th></tr></thead>
+<thead><tr><th>Scuola</th><th>Localita</th><th>Classe</th><th>Tipologia</th><th>Pubblicato</th><th>Scadenza</th><th>Link</th></tr></thead>
 <tbody id="tbody"></tbody>
 </table>
 </div>
@@ -47,6 +49,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const PAGE_SIZE = 1000;
 const SHOW_STEP = 300;
+const NONE = "__none__";
 let allRecords = [];
 let filtered = [];
 let shown = SHOW_STEP;
@@ -89,16 +92,17 @@ async function fetchAll(){
   return out;
 }
 
+function addOption(sel, value, label){
+  const o = document.createElement("option");
+  o.value = value;
+  o.textContent = label;
+  sel.appendChild(o);
+}
+
 function fillRegioni(){
   const regs = [...new Set(allRecords.map(r => r.regione).filter(Boolean))]
     .sort((a, b) => a.localeCompare(b, "it"));
-  const sel = $("fRegione");
-  regs.forEach(r => {
-    const o = document.createElement("option");
-    o.value = r;
-    o.textContent = r;
-    sel.appendChild(o);
-  });
+  regs.forEach(r => addOption($("fRegione"), r, r));
 }
 
 function fillProvince(){
@@ -108,21 +112,34 @@ function fillProvince(){
   const provs = [...new Set(
     allRecords.filter(r => !reg || r.regione === reg).map(r => r.provincia).filter(Boolean)
   )].sort();
-  provs.forEach(p => {
-    const o = document.createElement("option");
-    o.value = p;
-    o.textContent = p;
-    sel.appendChild(o);
-  });
+  provs.forEach(p => addOption(sel, p, p));
+}
+
+function fillTipologie(){
+  const tips = [...new Set(allRecords.map(r => r.tipologia_posto).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, "it"));
+  tips.forEach(t => addOption($("fTipologia"), t, t));
+  addOption($("fTipologia"), NONE, "Non indicata");
+}
+
+function fillClassi(){
+  const cls = [...new Set(allRecords.map(r => r.classe_concorso).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, "it"));
+  cls.forEach(c => addOption($("fClasse"), c, c));
 }
 
 function applyFilters(){
   const reg = $("fRegione").value;
   const prov = $("fProvincia").value;
+  const tip = $("fTipologia").value;
+  const cls = $("fClasse").value;
   const q = $("fSearch").value.trim().toLowerCase();
   filtered = allRecords.filter(r => {
     if(reg && r.regione !== reg) return false;
     if(prov && r.provincia !== prov) return false;
+    if(tip === NONE){ if(r.tipologia_posto) return false; }
+    else if(tip && r.tipologia_posto !== tip) return false;
+    if(cls && r.classe_concorso !== cls) return false;
     if(q){
       const hay = [r.scuola, r.comune, r.classe_concorso, r.provincia, r.regione, r.codice_meccanografico, r.tipologia_posto]
         .filter(Boolean).join(" ").toLowerCase();
@@ -150,6 +167,7 @@ function render(){
     const loc = r.comune || [r.provincia, r.regione].filter(Boolean).join(" · ") || "—";
     tr.appendChild(cell(loc));
     tr.appendChild(cell(r.classe_concorso || "—"));
+    tr.appendChild(cell(r.tipologia_posto || "—"));
     tr.appendChild(cell(fmtDate(r.data_pubblicazione)));
     tr.appendChild(cell(fmtDate(r.data_scadenza)));
     const td = document.createElement("td");
@@ -196,6 +214,8 @@ async function init(){
     $("freshness").textContent = `${allRecords.length} interpelli · ultimo aggiornamento: ${when}`;
     fillRegioni();
     fillProvince();
+    fillTipologie();
+    fillClassi();
     applyFilters();
   }catch(e){
     $("freshness").textContent = "Errore nel caricamento dei dati";
@@ -207,6 +227,8 @@ async function init(){
 
 $("fRegione").addEventListener("change", () => { fillProvince(); applyFilters(); });
 $("fProvincia").addEventListener("change", applyFilters);
+$("fTipologia").addEventListener("change", applyFilters);
+$("fClasse").addEventListener("change", applyFilters);
 $("fSearch").addEventListener("input", applyFilters);
 init();
 </script>
