@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -17,7 +17,10 @@ table{width:100%;border-collapse:collapse;font-size:13px;}
 th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);}
 th{color:var(--text-dim);font-weight:600;font-size:11px;text-transform:uppercase;}
 a.btn{color:var(--accent);text-decoration:none;font-weight:600;}
-#status{padding:20px;color:var(--text-dim);}
+#status{padding:16px 20px;color:var(--text-dim);font-size:13px;}
+#status.error{color:#FF8A8A;}
+#more{padding:0 20px 30px;}
+#more button{background:var(--accent);color:#fff;border:0;border-radius:6px;padding:10px 16px;font-size:14px;font-weight:600;}
 </style>
 </head>
 <body>
@@ -37,14 +40,175 @@ a.btn{color:var(--accent);text-decoration:none;font-weight:600;}
 <tbody id="tbody"></tbody>
 </table>
 </div>
+<div id="more"></div>
 <script>
 const SUPABASE_URL = "https://beehymkhsmkgbbtllbvk.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlZWh5bWtoc21rZ2JidGxsYnZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4NjgyOTQsImV4cCI6MjEwNTQ0NDI5NH0.DsV9Z5HilXzPMLVVkQYTVryO11JP0NWF7SUfQA8keF0";
+
+const PAGE_SIZE = 1000;
+const SHOW_STEP = 300;
 let allRecords = [];
-async function loadData(){
-const statusEl = document.getElementById("status");
-try{
-const res = await fetch(`${SUPABASE_URL}/rest/v1/interpelli?select=*&order=data_pubblicazione.desc`, {
-headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
-});
-i
+let filtered = [];
+let shown = SHOW_STEP;
+
+const $ = (id) => document.getElementById(id);
+
+function fmtDate(s){
+  if(!s) return "—";
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s);
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : s;
+}
+
+function safeUrl(u){
+  try{
+    const x = new URL(u);
+    return (x.protocol === "http:" || x.protocol === "https:") ? x.href : null;
+  }catch(e){
+    return null;
+  }
+}
+
+async function fetchAll(){
+  const out = [];
+  let offset = 0;
+  for(let i = 0; i < 50; i++){
+    const url = `${SUPABASE_URL}/rest/v1/interpelli?select=*&order=data_pubblicazione.desc.nullslast,record_key.asc&limit=${PAGE_SIZE}&offset=${offset}`;
+    const res = await fetch(url, {
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+    });
+    if(!res.ok){
+      const t = await res.text();
+      throw new Error(`Il database ha risposto ${res.status}: ${t.slice(0, 200)}`);
+    }
+    const batch = await res.json();
+    if(!Array.isArray(batch) || batch.length === 0) break;
+    out.push(...batch);
+    $("freshness").textContent = `Caricamento in corso... ${out.length} interpelli`;
+    offset += batch.length;
+  }
+  return out;
+}
+
+function fillRegioni(){
+  const regs = [...new Set(allRecords.map(r => r.regione).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, "it"));
+  const sel = $("fRegione");
+  regs.forEach(r => {
+    const o = document.createElement("option");
+    o.value = r;
+    o.textContent = r;
+    sel.appendChild(o);
+  });
+}
+
+function fillProvince(){
+  const reg = $("fRegione").value;
+  const sel = $("fProvincia");
+  sel.innerHTML = '<option value="">Tutte le province</option>';
+  const provs = [...new Set(
+    allRecords.filter(r => !reg || r.regione === reg).map(r => r.provincia).filter(Boolean)
+  )].sort();
+  provs.forEach(p => {
+    const o = document.createElement("option");
+    o.value = p;
+    o.textContent = p;
+    sel.appendChild(o);
+  });
+}
+
+function applyFilters(){
+  const reg = $("fRegione").value;
+  const prov = $("fProvincia").value;
+  const q = $("fSearch").value.trim().toLowerCase();
+  filtered = allRecords.filter(r => {
+    if(reg && r.regione !== reg) return false;
+    if(prov && r.provincia !== prov) return false;
+    if(q){
+      const hay = [r.scuola, r.comune, r.classe_concorso, r.provincia, r.regione, r.codice_meccanografico, r.tipologia_posto]
+        .filter(Boolean).join(" ").toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  shown = SHOW_STEP;
+  render();
+}
+
+function cell(text){
+  const td = document.createElement("td");
+  td.textContent = text;
+  return td;
+}
+
+function render(){
+  const tb = $("tbody");
+  tb.innerHTML = "";
+  const frag = document.createDocumentFragment();
+  filtered.slice(0, shown).forEach(r => {
+    const tr = document.createElement("tr");
+    tr.appendChild(cell(r.scuola || "—"));
+    const loc = r.comune || [r.provincia, r.regione].filter(Boolean).join(" · ") || "—";
+    tr.appendChild(cell(loc));
+    tr.appendChild(cell(r.classe_concorso || "—"));
+    tr.appendChild(cell(fmtDate(r.data_pubblicazione)));
+    tr.appendChild(cell(fmtDate(r.data_scadenza)));
+    const td = document.createElement("td");
+    const u = safeUrl(r.url_diretto);
+    if(u){
+      const a = document.createElement("a");
+      a.className = "btn";
+      a.href = u;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.textContent = "Apri";
+      td.appendChild(a);
+    }else{
+      td.textContent = "—";
+    }
+    tr.appendChild(td);
+    frag.appendChild(tr);
+  });
+  tb.appendChild(frag);
+
+  const st = $("status");
+  st.className = "";
+  if(filtered.length === 0){
+    st.textContent = "Nessun interpello trovato con questi filtri.";
+  }else{
+    st.textContent = `Mostrati ${Math.min(shown, filtered.length)} di ${filtered.length} interpelli`;
+  }
+
+  const more = $("more");
+  more.innerHTML = "";
+  if(shown < filtered.length){
+    const b = document.createElement("button");
+    b.textContent = "Mostra altri";
+    b.onclick = () => { shown += SHOW_STEP; render(); };
+    more.appendChild(b);
+  }
+}
+
+async function init(){
+  try{
+    allRecords = await fetchAll();
+    const last = allRecords.map(r => r.last_seen_at).filter(Boolean).sort().pop();
+    const when = last ? new Date(last).toLocaleString("it-IT") : "n.d.";
+    $("freshness").textContent = `${allRecords.length} interpelli · ultimo aggiornamento: ${when}`;
+    fillRegioni();
+    fillProvince();
+    applyFilters();
+  }catch(e){
+    $("freshness").textContent = "Errore nel caricamento dei dati";
+    const st = $("status");
+    st.className = "error";
+    st.textContent = e && e.message ? e.message : String(e);
+  }
+}
+
+$("fRegione").addEventListener("change", () => { fillProvince(); applyFilters(); });
+$("fProvincia").addEventListener("change", applyFilters);
+$("fSearch").addEventListener("input", applyFilters);
+init();
+</script>
+</body>
+</html>
