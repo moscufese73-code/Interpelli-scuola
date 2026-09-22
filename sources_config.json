@@ -3,6 +3,7 @@
     { "sigla": "CH", "regione": "Abruzzo", "url": "https://www.istruzionechietipescara.it/?s=INTERPELLO&submit=", "parser": "generic_wp" },
     { "sigla": "AQ", "regione": "Abruzzo", "url": "https://lnx.csalaquila.it/wp/category/interpelli-nazionali/", "parser": "generic_wp" },
     { "sigla": "PE", "regione": "Abruzzo", "url": "https://www.istruzionechietipescara.it/?s=INTERPELLO&submit=", "parser": "generic_wp" },
+    { "sigla": "TE", "regione": "Abruzzo", "url": "https://www.uspteramo.it/?s=INTERPELLO&submit=", "parser": "generic_wp" },
     { "sigla": "MT", "regione": "Basilicata", "url": "https://lnx.csalaquila.it/wp/category/interpelli-nazionali/", "parser": "generic_wp" },
     { "sigla": "PZ", "regione": "Basilicata", "url": "https://www.istruzionepotenza.it/interpelli-nazionali-docenti/", "parser": "generic_wp" },
     { "sigla": "CZ", "regione": "Calabria", "url": "https://www.istruzione.calabria.it/catanzaro/", "parser": "generic_wp" },
@@ -29,6 +30,7 @@
     { "sigla": "TS", "regione": "Friuli-Venezia Giulia", "url": "https://usrfvg.gov.it/it/home/menu/uffici/ufficio-territoriale-di-trieste/Interpelli/", "parser": "generic_wp" },
     { "sigla": "UD", "regione": "Friuli-Venezia Giulia", "url": "https://usrfvg.gov.it/it/home/menu/uffici/ufficio-territoriale-di-udine/Interpelli/", "parser": "generic_wp" },
     { "sigla": "FR", "regione": "Lazio", "url": "https://www.uspistruzione.fr.it/wp2/tag/interpello-nazionale", "parser": "generic_wp" },
+    { "sigla": "LT", "regione": "Lazio", "url": "https://www.csalatina.it/?s=interpello", "parser": "generic_wp" },
     { "sigla": "RI", "regione": "Lazio", "url": "https://www.usp-rieti.it/interpelli/", "parser": "generic_wp" },
     { "sigla": "RM", "regione": "Lazio", "url": "https://www.atpromaistruzione.it/atp/category/reclutamento/interpelli-personale-docente/", "parser": "generic_wp" },
     { "sigla": "VT", "regione": "Lazio", "url": "http://www.provveditoratostudiviterbo.it/DOCENTI/interpelli/INTERPELLIDOC.htm", "parser": "generic_wp" },
@@ -50,6 +52,7 @@
     { "sigla": "VA", "regione": "Lombardia", "url": "https://www.mim.gov.it/web/varese/interpelli-ricerca-supplenti", "parser": "mim_web" },
     { "sigla": "AN", "regione": "Marche", "url": "https://www.istruzione-ancona.it/", "parser": "generic_wp" },
     { "sigla": "AP", "regione": "Marche", "url": "https://www.uspascolipiceno.it/wordpress/", "parser": "generic_wp" },
+    { "sigla": "FM", "regione": "Marche", "url": "https://www.uspascolipiceno.it/wordpress/", "parser": "generic_wp" },
     { "sigla": "MC", "regione": "Marche", "url": "http://www.uspmc.sinp.net/?s=INTERPELLO", "parser": "generic_wp" },
     { "sigla": "PU", "regione": "Marche", "url": "https://www.usppesarourbino.it/category/interpelli/", "parser": "generic_wp" },
     { "sigla": "CB", "regione": "Molise", "url": "https://www.mim.gov.it/web/campobasso/", "parser": "mim_web" },
@@ -66,6 +69,7 @@
     { "sigla": "BT", "regione": "Puglia", "url": "https://www.uspbari.it/usp/", "parser": "generic_wp" },
     { "sigla": "BR", "regione": "Puglia", "url": "https://www.istruzionebrindisi.it/category/interpelli/", "parser": "generic_wp" },
     { "sigla": "FG", "regione": "Puglia", "url": "https://www.ustfoggia.it/", "parser": "generic_wp" },
+    { "sigla": "LE", "regione": "Puglia", "url": "https://www.ustlecce.it/?s=interpello", "parser": "generic_wp" },
     { "sigla": "TA", "regione": "Puglia", "url": "https://www.usptaranto.it/search/interpellO/", "parser": "generic_wp" },
     { "sigla": "CA", "regione": "Sardegna", "url": "https://www.mim.gov.it/web/cagliari/notizie", "parser": "mim_web" },
     { "sigla": "NU", "regione": "Sardegna", "url": "https://www.mim.gov.it/web/nuoro/interpelli", "parser": "mim_web" },
@@ -86,10 +90,12 @@
     { "sigla": "GR", "regione": "Toscana", "url": "https://www.ufficioscolasticogrosseto.it/uff7/index.php", "parser": "generic_wp" },
     { "sigla": "LI", "regione": "Toscana", "url": "https://www.ustli.it/usp_livorno/index.php/docenti/interpelli", "parser": "generic_wp" },
     { "sigla": "LU", "regione": "Toscana", "url": "https://ustlucca.it/", "parser": "generic_wp" },
+    { "sigla": "MS", "regione": "Toscana", "url": "https://www.ustms.it/download/267/interpelli-vari", "parser": "generic_wp" },
     { "sigla": "PI", "regione": "Toscana", "url": "https://www.usp-pi.it/articoli/", "parser": "generic_wp" },
     { "sigla": "PO", "regione": "Toscana", "url": "https://www.ufficioscolasticoprovinciale.prato.it/?s=INTERPELLO&submit=", "parser": "generic_wp" },
     { "sigla": "PT", "regione": "Toscana", "url": "https://www.ufficioscolasticoprovinciale.pistoia.it/?s=INTERPELLO&submit=", "parser": "generic_wp" },
     { "sigla": "SI", "regione": "Toscana", "url": "https://www.uspsi.it/?cat=271", "parser": "generic_wp" },
+    { "sigla": "BZ", "regione": "Trentino-Alto Adige", "url": "https://www.provincia.bz.it/formazione-lingue/scuola-italiana/", "parser": "generic_wp" },
     { "sigla": "TN", "regione": "Trentino-Alto Adige", "url": "https://www.vivoscuola.it/", "parser": "generic_wp" },
     { "sigla": "PG", "regione": "Umbria", "url": "https://istruzione.umbria.it/interpelli/interpelli-aperti/", "parser": "umbria_table" },
     { "sigla": "TR", "regione": "Umbria", "url": "https://istruzione.umbria.it/interpelli/interpelli-aperti/", "parser": "umbria_table" },
@@ -100,6 +106,7 @@
     { "sigla": "TV", "regione": "Veneto", "url": "https://treviso.istruzioneveneto.gov.it/?s=interpello", "parser": "generic_wp" },
     { "sigla": "VE", "regione": "Veneto", "url": "https://venezia.istruzioneveneto.gov.it/interpelli-supplenze/", "parser": "generic_wp" },
     { "sigla": "VR", "regione": "Veneto", "url": "https://verona.istruzioneveneto.gov.it/index.php/interpelli-settembre-2026/", "parser": "generic_wp" },
-    { "sigla": "VI", "regione": "Veneto", "url": "https://vicenza.istruzioneveneto.gov.it/interpelli-om88/", "parser": "generic_wp" }
+    { "sigla": "VI", "regione": "Veneto", "url": "https://vicenza.istruzioneveneto.gov.it/interpelli-om88/", "parser": "generic_wp" },
+    { "sigla": "NAZ", "regione": "Nazionale", "url": "https://www.docenti.it/interpelli.html", "parser": "docenti_nazionale" }
   ]
 }
