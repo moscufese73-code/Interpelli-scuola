@@ -620,19 +620,15 @@ async function init(){
     const st = $("status");
     st.className = "error";
     st.textContent = e && e.message ? e.message : String(e);
-  }
-}
-
-$("fRegione").addEventListener("change", () => { fillProvince(); applyFilters(); });
-$("fProvincia").addEventListener("change", applyFilters);
-$("fGrado").addEventListener("change", () => { fillClassi(); applyFilters(); });
-$("fClasse").addEventListener("change", applyFilters);
-$("fStato").addEventListener("change", applyFilters);
-$("fSearch").addEventListener("input", applyFilters);
+  }$("fRegione").addEventListener("change", fillProvince);
+$("fGrado").addEventListener("change", fillClassi);
 $("fSearch").addEventListener("keydown", (e) => { if(e.key === "Enter") applyFilters(); });
 $("btnCerca").addEventListener("click", () => { applyFilters(); $("status").scrollIntoView({ behavior: "smooth" }); });
 $("btnReset").addEventListener("click", resetFilters);
 $("btnFonti").addEventListener("click", toggleFonti);
+}
+
+ 
 init();
 </script>
 </body>
