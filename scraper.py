@@ -46,6 +46,58 @@ HEADERS = {
     "Accept-Language": "it-IT,it;q=0.9,en;q=0.8",
 }
 
+MESI_ITALIANI = {
+    "gennaio": 1, "febbraio": 2, "marzo": 3, "aprile": 4, "maggio": 5, "giugno": 6,
+    "luglio": 7, "agosto": 8, "settembre": 9, "ottobre": 10, "novembre": 11, "dicembre": 12,
+}
+
+# Nome provincia come scritto da Docenti.it -> (sigla, regione), per la fonte aggregatrice nazionale
+PROVINCIA_MAP = {
+    "chieti": ("CH", "Abruzzo"), "l'aquila": ("AQ", "Abruzzo"), "pescara": ("PE", "Abruzzo"), "teramo": ("TE", "Abruzzo"),
+    "matera": ("MT", "Basilicata"), "potenza": ("PZ", "Basilicata"),
+    "catanzaro": ("CZ", "Calabria"), "cosenza": ("CS", "Calabria"), "crotone": ("KR", "Calabria"),
+    "reggio calabria": ("RC", "Calabria"), "vibo valentia": ("VV", "Calabria"),
+    "avellino": ("AV", "Campania"), "benevento": ("BN", "Campania"), "caserta": ("CE", "Campania"),
+    "napoli": ("NA", "Campania"), "salerno": ("SA", "Campania"),
+    "bologna": ("BO", "Emilia-Romagna"), "ferrara": ("FE", "Emilia-Romagna"),
+    "forli-cesena": ("FC", "Emilia-Romagna"), "forlì-cesena": ("FC", "Emilia-Romagna"),
+    "modena": ("MO", "Emilia-Romagna"), "parma": ("PR", "Emilia-Romagna"), "piacenza": ("PC", "Emilia-Romagna"),
+    "ravenna": ("RA", "Emilia-Romagna"), "reggio emilia": ("RE", "Emilia-Romagna"), "rimini": ("RN", "Emilia-Romagna"),
+    "gorizia": ("GO", "Friuli-Venezia Giulia"), "pordenone": ("PN", "Friuli-Venezia Giulia"),
+    "trieste": ("TS", "Friuli-Venezia Giulia"), "udine": ("UD", "Friuli-Venezia Giulia"),
+    "frosinone": ("FR", "Lazio"), "latina": ("LT", "Lazio"), "rieti": ("RI", "Lazio"),
+    "roma": ("RM", "Lazio"), "viterbo": ("VT", "Lazio"),
+    "genova": ("GE", "Liguria"), "imperia": ("IM", "Liguria"), "la spezia": ("SP", "Liguria"), "savona": ("SV", "Liguria"),
+    "bergamo": ("BG", "Lombardia"), "brescia": ("BS", "Lombardia"), "como": ("CO", "Lombardia"),
+    "cremona": ("CR", "Lombardia"), "lecco": ("LC", "Lombardia"), "lodi": ("LO", "Lombardia"),
+    "mantova": ("MN", "Lombardia"), "milano": ("MI", "Lombardia"),
+    "monza e della brianza": ("MB", "Lombardia"), "monza e brianza": ("MB", "Lombardia"),
+    "pavia": ("PV", "Lombardia"), "sondrio": ("SO", "Lombardia"), "varese": ("VA", "Lombardia"),
+    "ancona": ("AN", "Marche"), "ascoli piceno": ("AP", "Marche"), "fermo": ("FM", "Marche"),
+    "macerata": ("MC", "Marche"), "pesaro-urbino": ("PU", "Marche"), "pesaro e urbino": ("PU", "Marche"),
+    "campobasso": ("CB", "Molise"), "isernia": ("IS", "Molise"),
+    "alessandria": ("AL", "Piemonte"), "asti": ("AT", "Piemonte"), "biella": ("BI", "Piemonte"),
+    "cuneo": ("CN", "Piemonte"), "novara": ("NO", "Piemonte"), "torino": ("TO", "Piemonte"),
+    "verbano-cusio-ossola": ("VB", "Piemonte"), "vercelli": ("VC", "Piemonte"),
+    "bari": ("BA", "Puglia"), "barletta-andria-trani": ("BT", "Puglia"), "brindisi": ("BR", "Puglia"),
+    "foggia": ("FG", "Puglia"), "lecce": ("LE", "Puglia"), "taranto": ("TA", "Puglia"),
+    "cagliari": ("CA", "Sardegna"), "medio campidano": ("SU", "Sardegna"), "nuoro": ("NU", "Sardegna"),
+    "ogliastra": ("NU", "Sardegna"), "oristano": ("OR", "Sardegna"), "sassari": ("SS", "Sardegna"),
+    "carbonia-iglesias": ("SU", "Sardegna"), "sud sardegna": ("SU", "Sardegna"), "olbia-tempio": ("SS", "Sardegna"),
+    "agrigento": ("AG", "Sicilia"), "caltanissetta": ("CL", "Sicilia"), "catania": ("CT", "Sicilia"),
+    "enna": ("EN", "Sicilia"), "messina": ("ME", "Sicilia"), "palermo": ("PA", "Sicilia"),
+    "ragusa": ("RG", "Sicilia"), "siracusa": ("SR", "Sicilia"), "trapani": ("TP", "Sicilia"),
+    "arezzo": ("AR", "Toscana"), "firenze": ("FI", "Toscana"), "grosseto": ("GR", "Toscana"),
+    "livorno": ("LI", "Toscana"), "lucca": ("LU", "Toscana"), "massa-carrara": ("MS", "Toscana"),
+    "pisa": ("PI", "Toscana"), "pistoia": ("PT", "Toscana"), "prato": ("PO", "Toscana"), "siena": ("SI", "Toscana"),
+    "bolzano": ("BZ", "Trentino-Alto Adige"), "bolzano/bozen": ("BZ", "Trentino-Alto Adige"),
+    "trento": ("TN", "Trentino-Alto Adige"),
+    "perugia": ("PG", "Umbria"), "terni": ("TR", "Umbria"),
+    "aosta": ("AO", "Valle d'Aosta"),
+    "belluno": ("BL", "Veneto"), "padova": ("PD", "Veneto"), "rovigo": ("RO", "Veneto"),
+    "treviso": ("TV", "Veneto"), "venezia": ("VE", "Veneto"), "verona": ("VR", "Veneto"), "vicenza": ("VI", "Veneto"),
+}
+
 CDC_PATTERN = re.compile(r"\b(A[A-Z0-9]{3}|B0[0-9]{2}|AD[A-Z]{2}|AA[A-Z0-9]{2}|EEEE|AAAA)\b")
 CODICE_MECC_PATTERN = re.compile(r"\b[A-Z]{2,4}[0-9]{5,6}[A-Z]\b")
 DATE_PATTERNS = [
@@ -221,178 +273,12 @@ def parser_piemonte_php(html, url, sigla, regione):
     return parser_umbria_table(html, url, sigla, regione)
 
 
-PARSERS = {
-    "generic_wp": parser_generic_wp,
-    "mim_web": parser_mim_web,
-    "umbria_table": parser_umbria_table,
-    "piemonte_php": parser_piemonte_php,
-}
-
-
-def scrape_all(config):
-    """Ritorna (record, siglas_falliti)."""
-    all_records = []
-    failed_siglas = set()
-    fetched = {}      # url -> html (o None se fallito): ogni pagina una sola volta
-    url_region = {}   # url -> regione della prima fonte che lo usa
-
-    for src in config["sources"]:
-        sigla, regione, url, parser_name = src["sigla"], src["regione"], src["url"], src["parser"]
-        print(f"-> {regione} / {sigla}: {url}")
-
-        prima = url_region.get(url)
-        if prima and prima != regione:
-            motivo = f"stesso indirizzo di una fonte di {prima}: saltata per non mescolare le regioni"
-            print(f"   [SALTATA] {motivo}")
-            SKIPPED.append((sigla, motivo))
-            continue
-        url_region.setdefault(url, regione)
-
-        if url in fetched:
-            html = fetched[url]
-        else:
-            html = fetch(url)
-            fetched[url] = html
-            if html:
-                time.sleep(1.5)
-        if not html:
-            failed_siglas.add(sigla)
-            continue
-
-        parser = PARSERS.get(parser_name, parser_generic_wp)
-        try:
-            records = parser(html, url, sigla, regione)
-        except Exception as e:
-            print(f"  [ERRORE parser {parser_name}] {e}", file=sys.stderr)
-            FAILED.append((url, f"parser {parser_name}: {e}"))
-            failed_siglas.add(sigla)
-            records = []
-        print(f"   trovati {len(records)} possibili record")
-        all_records.extend(records)
-    return all_records, failed_siglas
-
-
-def dedupe(records):
-    seen = {}
-    for r in records:
-        seen[record_key(r)] = r
-    return list(seen.values())
-
-
-def supabase_env():
-    url = os.environ.get("SUPABASE_URL")
-    key = os.environ.get("SUPABASE_KEY")
-    if not url or not key:
-        return None, None
-    return url.rstrip("/"), key
-
-
-def push_to_supabase(records):
-    """Ritorna True se ok (o saltato), False se la sincronizzazione e' fallita."""
-    url, key = supabase_env()
-    if not url:
-        print("[ATTENZIONE] SUPABASE_URL / SUPABASE_KEY non impostate: salto la sincronizzazione remota.")
-        return True
-    if not records:
-        print("Nessun record da sincronizzare su Supabase.")
-        return True
-
-    endpoint = f"{url}/rest/v1/interpelli?on_conflict=record_key"
-    headers = {
-        "apikey": key,
-        "Authorization": f"Bearer {key}",
-        "Content-Type": "application/json",
-        "Prefer": "resolution=merge-duplicates,return=minimal",
-    }
-    now = datetime.now(timezone.utc).isoformat()
-    rows = [{
-        "record_key": record_key(r),
-        "scuola": r.get("scuola"),
-        "codice_meccanografico": r.get("codiceMeccanografico"),
-        "regione": r.get("regione"),
-        "provincia": r.get("provincia"),
-        "comune": r.get("comune"),
-        "grado_scuola": r.get("gradoScuola"),
-        "classe_concorso": r.get("classeConcorso"),
-        "tipologia_posto": r.get("tipologiaPosto"),
-        "ore_settimanali": r.get("oreSettimanali"),
-        "data_pubblicazione": r.get("dataPubblicazione") or None,
-        "data_scadenza": r.get("dataScadenza") or None,
-        "url_diretto": r.get("urlDiretto"),
-        "last_seen_at": now,
-    } for r in records]
-
-    ok = True
-    batch_size = 200
-    for i in range(0, len(rows), batch_size):
-        batch = rows[i:i + batch_size]
-        try:
-            resp = requests.post(endpoint, headers=headers, json=batch, timeout=60)
-            if resp.status_code >= 400:
-                print(f"[ERRORE] Supabase ha risposto {resp.status_code}: {resp.text[:500]}", file=sys.stderr)
-                ok = False
-            else:
-                print(f"Sincronizzati {len(batch)} record su Supabase.")
-        except requests.RequestException as e:
-            print(f"[ERRORE] sync Supabase fallita: {e}", file=sys.stderr)
-            ok = False
-    return ok
-
-
-def delete_stale(run_start, failed_siglas):
-    """Toglie i record non piu' presenti sulle fonti (non aggiornati in questa esecuzione).
-    Le province la cui fonte non e' raggiungibile non vengono toccate."""
-    url, key = supabase_env()
-    if not url:
-        return
-    endpoint = f"{url}/rest/v1/interpelli"
-    headers = {"apikey": key, "Authorization": f"Bearer {key}", "Prefer": "return=minimal"}
-    params = {"last_seen_at": "lt." + run_start}
-    if failed_siglas:
-        params["provincia"] = "not.in.(" + ",".join(sorted(failed_siglas)) + ")"
-    try:
-        resp = requests.delete(endpoint, headers=headers, params=params, timeout=60)
-        if resp.status_code >= 400:
-            print(f"[ATTENZIONE] pulizia dei record vecchi non riuscita ({resp.status_code}): {resp.text[:300]}",
-                  file=sys.stderr)
-        else:
-            print("Pulizia: tolti i record non piu' presenti sulle fonti.")
-    except requests.RequestException as e:
-        print(f"[ATTENZIONE] pulizia dei record vecchi non riuscita: {e}", file=sys.stderr)
-
-
-def main():
-    run_start = datetime.now(timezone.utc).isoformat()
-    config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
-    records, failed_siglas = scrape_all(config)
-    records = dedupe(records)
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT_PATH.write_text(json.dumps({
-        "generatedAt": datetime.now(timezone.utc).isoformat(),
-        "count": len(records),
-        "records": records,
-    }, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"\nScritti {len(records)} record in {OUTPUT_PATH}")
-
-    sync_ok = push_to_supabase(records)
-
-    total = len(config["sources"])
-    if sync_ok and records and len(failed_siglas) <= 0.15 * total:
-        delete_stale(run_start, failed_siglas)
-
-    print("\n===== RIEPILOGO =====")
-    print(f"Fonti totali: {total} | non scaricate: {len(failed_siglas)} | saltate: {len(SKIPPED)} | record trovati: {len(records)}")
-    for u, motivo in FAILED:
-        print(f"  - {u} -> {motivo}")
-    for s, motivo in SKIPPED:
-        print(f"  - {s}: {motivo}")
-
-    if not records:
-        print("[ERRORE] Nessun interpello trovato: controlla le fonti sopra.", file=sys.stderr)
-        sys.exit(1)
-    if not sync_ok:
-        sys.exit(1)
-
-
-if __name__ == "__main__":
-    main()
+def parse_italian_date(raw):
+    m = re.search(r"(\d{1,2})\s+(\w+)\s+(\d{4})", raw or "")
+    if not m:
+        return ""
+    giorno, mese_nome, anno = m.groups()
+    mese = MESI_ITALIANI.get(mese_nome.lower())
+    if not mese:
+        return ""
+    return f"{int(anno):04d}-{mese:02d}-{int(giorno):02d}"
