@@ -253,21 +253,50 @@ def parser_mim_web(html, url, sigla, regione):
     return out
 
 
-def parser_umbria_table(html, url, sigla, regione):
+ def parser_umbria_table(html, url, sigla, regione):
+    stato_chiuso = {"cancellato", "chiuso", "revocato", "annullato", "sospeso", "ritirato"}
     soup = BeautifulSoup(html, "html.parser")
     out = []
-    for row in soup.select("table tr"):
-        cells = [c.get_text(" ", strip=True) for c in row.find_all(["td", "th"])]
-        if not cells or len(cells) < 2:
+    for table in soup.select("table"):
+        rows = table.find_all("tr")
+        if len(rows) < 2:
             continue
-        joined = " | ".join(cells)
-        if not CODICE_MECC_PATTERN.search(joined):
-            continue
-        rec = extract_from_block(joined, url, sigla, regione)
-        rec["scuola"] = cells[0]
-        out.append(rec)
+        header_cells = [c.get_text(" ", strip=True).lower() for c in rows[0].find_all(["th", "td"])]
+        idx = {}
+        for i, h in enumerate(header_cells):
+            if ("istitut" in h or "denomina" in h) and "scuola" not in idx:
+                idx["scuola"] = i
+            if "meccanograf" in h:
+                idx["codice"] = i
+            if ("classe" in h or "posto" in h or "tipologia" in h) and "classe" not in idx:
+                idx["classe"] = i
+            if h.strip() == "stato" and "stato" not in idx:
+                idx["stato"] = i
+        for row in (rows[1:] if idx else rows):
+            cells = [c.get_text(" ", strip=True) for c in row.find_all(["td", "th"])]
+            if not cells or len(cells) < 2:
+                continue
+            joined = " | ".join(cells)
+            if not CODICE_MECC_PATTERN.search(joined):
+                continue
+            if "stato" in idx and idx["stato"] < len(cells):
+                if cells[idx["stato"]].strip().lower() in stato_chiuso:
+                    continue
+            rec = extract_from_block(joined, url, sigla, regione)
+            codice = cells[idx["codice"]].strip() if "codice" in idx and idx["codice"] < len(cells) else rec.get("codiceMeccanografico", "")
+            istituto = cells[idx["scuola"]].strip() if "scuola" in idx and idx["scuola"] < len(cells) else ""
+            if codice and istituto:
+                rec["scuola"] = codice + " - " + istituto
+            elif istituto:
+                rec["scuola"] = istituto
+            else:
+                rec["scuola"] = cells[0]
+            if codice:
+                rec["codiceMeccanografico"] = codice
+            if "classe" in idx and idx["classe"] < len(cells) and cells[idx["classe"]].strip():
+                rec["classeConcorso"] = cells[idx["classe"]].strip()
+            out.append(rec)
     return out
-
 
 def parser_piemonte_php(html, url, sigla, regione):
     return parser_umbria_table(html, url, sigla, regione)
