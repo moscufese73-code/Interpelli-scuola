@@ -3,7 +3,7 @@
     { "sigla": "CH", "regione": "Abruzzo", "url": "https://www.istruzionechietipescara.it/?s=INTERPELLO&submit=", "parser": "generic_wp" },
     { "sigla": "AQ", "regione": "Abruzzo", "url": "https://lnx.csalaquila.it/wp/category/interpelli-nazionali/", "parser": "generic_wp" },
     { "sigla": "PE", "regione": "Abruzzo", "url": "https://www.istruzionechietipescara.it/?s=INTERPELLO&submit=", "parser": "generic_wp" },
-    { "sigla": "TE", "regione": "Abruzzo", "url": "https://www.uspteramo.it/?s=INTERPELLO&submit=", "parser": "generic_wp" },
+    { "sigla": "TE", "regione": "Abruzzo", "url": "https://www.docenti.it/interpelli/interpelli-teramo.html", "parser": "docenti_provincia" },
     { "sigla": "MT", "regione": "Basilicata", "url": "https://lnx.csalaquila.it/wp/category/interpelli-nazionali/", "parser": "generic_wp" },
     { "sigla": "PZ", "regione": "Basilicata", "url": "https://www.istruzionepotenza.it/interpelli-nazionali-docenti/", "parser": "generic_wp" },
     { "sigla": "CZ", "regione": "Calabria", "url": "https://www.istruzione.calabria.it/catanzaro/", "parser": "generic_wp" },
