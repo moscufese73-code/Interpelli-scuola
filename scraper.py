@@ -282,3 +282,266 @@ def parse_italian_date(raw):
     if not mese:
         return ""
     return f"{int(anno):04d}-{mese:02d}-{int(giorno):02d}"
+def normalize_classe_docenti(raw):
+    """'A-42' -> 'A042' ; 'AAAA, ADAA, ADEE, EEEE' -> prima classe 'AAAA'."""
+    if not raw:
+        return ""
+    prima = raw.split(",")[0].strip()
+    m = re.match(r"^([A-Za-z]+)-?(\d+)$", prima)
+    if m:
+        lettere, numeri = m.groups()
+        return lettere.upper() + numeri.zfill(3 if len(lettere) == 1 else 2)
+    return prima.upper()
+
+
+def parser_docenti_nazionale(html, url, sigla, regione):
+    """Fonte aggregatrice (non ufficiale) docenti.it: raccoglie interpelli da tutte le scuole
+    d'Italia, spesso prima che compaiano sul sito dell'USP. La provincia/regione di ogni
+    record viene letta dalla scheda stessa, non dai parametri sigla/regione della fonte."""
+    soup = BeautifulSoup(html, "html.parser")
+    text = soup.get_text("\n")
+    out = []
+    cards = text.split("Apri le informazioni per candidarti")
+    for card in cards[:-1]:
+        prov_m = re.search(r"Provincia\s*\n\s*(.+)", card)
+        if not prov_m:
+            continue
+        prima_parte = card.split("Provincia\n")[0]
+        righe_titolo = [r.strip().lstrip("#").strip() for r in prima_parte.split("\n") if r.strip()]
+        if not righe_titolo:
+            continue
+        titolo = righe_titolo[0]
+        classe_m = re.search(r"Classe di concorso\s*\n\s*(.+)", card)
+        pub_m = re.search(r"Pubblicato il\s*\n\s*(.+)", card)
+        sca_m = re.search(r"Scadenza\s*\n\s*(.+)", card)
+        ore_m = re.search(r"\bOre\s*\n\s*(\d+)", card)
+        provincia_raw = prov_m.group(1).strip()
+        prov_sigla, prov_regione = PROVINCIA_MAP.get(provincia_raw.lower(), ("", ""))
+        if not prov_sigla:
+            continue
+        rec = {
+            "scuola": titolo,
+            "codiceMeccanografico": "", "comune": "", "gradoScuola": "", "tipologiaPosto": "",
+            "provincia": prov_sigla,
+            "regione": prov_regione,
+            "classeConcorso": normalize_classe_docenti(classe_m.group(1).strip() if classe_m else ""),
+            "dataPubblicazione": parse_italian_date(pub_m.group(1)) if pub_m else "",
+            "dataScadenza": parse_italian_date(sca_m.group(1)) if sca_m else "",
+            "oreSettimanali": ore_m.group(1) if ore_m else "",
+            "urlDiretto": url,
+        }
+        out.append(rec)
+    return out
+
+
+def parser_docenti_provincia(html, url, sigla, regione):
+    """Pagina di Docenti.it dedicata a UNA provincia (es. .../interpelli-teramo.html).
+    Qui non c'e' il campo "Provincia" nella scheda (e' gia' sottinteso dalla pagina),
+    quindi sigla e regione arrivano da sources_config.json come per le fonti ufficiali."""
+    soup = BeautifulSoup(html, "html.parser")
+    text = soup.get_text("\n")
+    out = []
+    cards = text.split("Apri le informazioni per candidarti")
+    for card in cards[:-1]:
+        righe = [r.strip().lstrip("#").strip() for r in card.split("\n") if r.strip()]
+        if not righe:
+            continue
+        titolo = righe[0]
+        classe_m = re.search(r"Classe di concorso\s*\n\s*(.+)", card)
+        pub_m = re.search(r"Pubblicato il\s*\n\s*(.+)", card)
+        sca_m = re.search(r"Scadenza\s*\n\s*(.+)", card)
+        ore_m = re.search(r"\bOre\s*\n\s*(\d+)", card)
+        if not classe_m:
+            continue
+        rec = {
+            "scuola": titolo,
+            "codiceMeccanografico": "", "comune": "", "gradoScuola": "", "tipologiaPosto": "",
+            "provincia": sigla,
+            "regione": regione,
+            "classeConcorso": normalize_classe_docenti(classe_m.group(1).strip()),
+            "dataPubblicazione": parse_italian_date(pub_m.group(1)) if pub_m else "",
+            "dataScadenza": parse_italian_date(sca_m.group(1)) if sca_m else "",
+            "oreSettimanali": ore_m.group(1) if ore_m else "",
+            "urlDiretto": url,
+        }
+        out.append(rec)
+    return out
+
+
+PARSERS = {
+    "generic_wp": parser_generic_wp,
+    "mim_web": parser_mim_web,
+    "umbria_table": parser_umbria_table,
+    "piemonte_php": parser_piemonte_php,
+    "docenti_nazionale": parser_docenti_nazionale,
+    "docenti_provincia": parser_docenti_provincia,
+}
+
+
+def scrape_all(config):
+    """Ritorna (record, siglas_falliti)."""
+    all_records = []
+    failed_siglas = set()
+    fetched = {}
+    url_region = {}
+
+    for src in config["sources"]:
+        sigla, regione, url, parser_name = src["sigla"], src["regione"], src["url"], src["parser"]
+        print(f"-> {regione} / {sigla}: {url}")
+
+        prima = url_region.get(url)
+        if prima and prima != regione:
+            motivo = f"stesso indirizzo di una fonte di {prima}: saltata per non mescolare le regioni"
+            print(f"   [SALTATA] {motivo}")
+            SKIPPED.append((sigla, motivo))
+            continue
+        url_region.setdefault(url, regione)
+
+        if url in fetched:
+            html = fetched[url]
+        else:
+            html = fetch(url)
+            fetched[url] = html
+            if html:
+                time.sleep(1.5)
+        if not html:
+            failed_siglas.add(sigla)
+            continue
+
+        parser = PARSERS.get(parser_name, parser_generic_wp)
+        try:
+            records = parser(html, url, sigla, regione)
+        except Exception as e:
+            print(f"  [ERRORE parser {parser_name}] {e}", file=sys.stderr)
+            FAILED.append((url, f"parser {parser_name}: {e}"))
+            failed_siglas.add(sigla)
+            records = []
+        print(f"   trovati {len(records)} possibili record")
+        all_records.extend(records)
+    return all_records, failed_siglas
+
+
+def dedupe(records):
+    seen = {}
+    for r in records:
+        seen[record_key(r)] = r
+    return list(seen.values())
+
+
+def supabase_env():
+    url = os.environ.get("SUPABASE_URL")
+    key = os.environ.get("SUPABASE_KEY")
+    if not url or not key:
+        return None, None
+    return url.rstrip("/"), key
+
+
+def push_to_supabase(records):
+    """Ritorna True se ok (o saltato), False se la sincronizzazione e' fallita."""
+    url, key = supabase_env()
+    if not url:
+        print("[ATTENZIONE] SUPABASE_URL / SUPABASE_KEY non impostate: salto la sincronizzazione remota.")
+        return True
+    if not records:
+        print("Nessun record da sincronizzare su Supabase.")
+        return True
+
+    endpoint = f"{url}/rest/v1/interpelli?on_conflict=record_key"
+    headers = {
+        "apikey": key,
+        "Authorization": f"Bearer {key}",
+        "Content-Type": "application/json",
+        "Prefer": "resolution=merge-duplicates,return=minimal",
+    }
+    now = datetime.now(timezone.utc).isoformat()
+    rows = [{
+        "record_key": record_key(r),
+        "scuola": r.get("scuola"),
+        "codice_meccanografico": r.get("codiceMeccanografico"),
+        "regione": r.get("regione"),
+        "provincia": r.get("provincia"),
+        "comune": r.get("comune"),
+        "grado_scuola": r.get("gradoScuola"),
+        "classe_concorso": r.get("classeConcorso"),
+        "tipologia_posto": r.get("tipologiaPosto"),
+        "ore_settimanali": r.get("oreSettimanali"),
+        "data_pubblicazione": r.get("dataPubblicazione") or None,
+        "data_scadenza": r.get("dataScadenza") or None,
+        "url_diretto": r.get("urlDiretto"),
+        "last_seen_at": now,
+    } for r in records]
+
+    ok = True
+    batch_size = 200
+    for i in range(0, len(rows), batch_size):
+        batch = rows[i:i + batch_size]
+        try:
+            resp = requests.post(endpoint, headers=headers, json=batch, timeout=60)
+            if resp.status_code >= 400:
+                print(f"[ERRORE] Supabase ha risposto {resp.status_code}: {resp.text[:500]}", file=sys.stderr)
+                ok = False
+            else:
+                print(f"Sincronizzati {len(batch)} record su Supabase.")
+        except requests.RequestException as e:
+            print(f"[ERRORE] sync Supabase fallita: {e}", file=sys.stderr)
+            ok = False
+    return ok
+
+
+def delete_stale(run_start, failed_siglas):
+    """Toglie i record non piu' presenti sulle fonti (non aggiornati in questa esecuzione).
+    Le province la cui fonte non e' raggiungibile non vengono toccate."""
+    url, key = supabase_env()
+    if not url:
+        return
+    endpoint = f"{url}/rest/v1/interpelli"
+    headers = {"apikey": key, "Authorization": f"Bearer {key}", "Prefer": "return=minimal"}
+    params = {"last_seen_at": "lt." + run_start}
+    if failed_siglas:
+        params["provincia"] = "not.in.(" + ",".join(sorted(failed_siglas)) + ")"
+    try:
+        resp = requests.delete(endpoint, headers=headers, params=params, timeout=60)
+        if resp.status_code >= 400:
+            print(f"[ATTENZIONE] pulizia dei record vecchi non riuscita ({resp.status_code}): {resp.text[:300]}",
+                  file=sys.stderr)
+        else:
+            print("Pulizia: tolti i record non piu' presenti sulle fonti.")
+    except requests.RequestException as e:
+        print(f"[ATTENZIONE] pulizia dei record vecchi non riuscita: {e}", file=sys.stderr)
+
+
+def main():
+    run_start = datetime.now(timezone.utc).isoformat()
+    config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+    records, failed_siglas = scrape_all(config)
+    records = dedupe(records)
+    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_PATH.write_text(json.dumps({
+        "generatedAt": datetime.now(timezone.utc).isoformat(),
+        "count": len(records),
+        "records": records,
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"\nScritti {len(records)} record in {OUTPUT_PATH}")
+
+    sync_ok = push_to_supabase(records)
+
+    total = len(config["sources"])
+    if sync_ok and records and len(failed_siglas) <= 0.15 * total:
+        delete_stale(run_start, failed_siglas)
+
+    print("\n===== RIEPILOGO =====")
+    print(f"Fonti totali: {total} | non scaricate: {len(failed_siglas)} | saltate: {len(SKIPPED)} | record trovati: {len(records)}")
+    for u, motivo in FAILED:
+        print(f"  - {u} -> {motivo}")
+    for s, motivo in SKIPPED:
+        print(f"  - {s}: {motivo}")
+
+    if not records:
+        print("[ERRORE] Nessun interpello trovato: controlla le fonti sopra.", file=sys.stderr)
+        sys.exit(1)
+    if not sync_ok:
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
